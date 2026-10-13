@@ -1,5 +1,7 @@
 # Temuan audit dataset — 13 Oktober 2026
 
+Catatan tindak lanjut: laporan ini menyimpan temuan audit awal. Metadata sumber dan keputusan kurasi setelah audit ada di [sumber dataset](../../docs/DATASET_SOURCES.md) dan [hasil Tahap 1](../data_preparation/README.md). Pernyataan informasi belum tersedia di bawah menggambarkan kondisi saat audit awal.
+
 ## Keputusan yang disarankan
 
 Dataset dapat digunakan untuk eksperimen awal, tetapi pembagian SIBI multi-background perlu diperbaiki dan keberhasilan ekstraksi BISINDO perlu ditingkatkan sebelum baseline classifier dinilai. Mulai baseline landmark SIBI dari **mono-background tanpa augmentasi**; simpan multi-background sebagai eksperimen terpisah setelah sumber gambarnya dikelompokkan dengan benar. Kualitas pada webcam nyata tetap harus diuji dengan data baru.

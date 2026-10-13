@@ -1,0 +1,24 @@
+{
+  "assignment_sha256": "5b88fa1fc7b76077ca53af506c6196365ac9ef2e434af31093a52fcce3b04f85",
+  "config_sha256": "9cff352334eed7da5dac1f77b939f442d8f16512770634f7e3b46efaedfa5079",
+  "input_hash_format": "parsed-canonical-json-v1",
+  "input_sha256": {
+    "audit_summary": "db692ce7fde5a6720b60c281b3204975e56fada715f1173f1ed60f4d7ad024da",
+    "curation_decisions": "1933a5e9ea0d71698ecf15223f3e9b9750966177390bcf483deaa7dd14b2cb07",
+    "inventory": "072dca1fb125475b80ab4dd3f9acac885d1ad0ccd23f31977fc8e21fe57f780a",
+    "label_map": "e7a460d46b53417ddb7f7f97288ee4e8b9cf42776b47e870eee0cb1a77c1b702"
+  },
+  "manifests_sha256": {
+    "all_samples.csv": "a5c5c5982873599d8024f39bcc4496e1681a9e298394b73dd1663b2143885761",
+    "bisindo_test.csv": "8d861737ba1a3344d1944951549085142b968ea3408682c70e895e126001e10a",
+    "bisindo_train.csv": "d76fc63854196982a4800d263cfa777cfffee14017c78453cf49e0be14940fdf",
+    "bisindo_val.csv": "49beedb9783fbc89a12e788675429c03d75035e3dcc7a6f736b40bc14a72172a",
+    "excluded.csv": "219b80ec982e45259a6f3f7f2ad537dae185282c1bd69784f3a6ad8c3727c009",
+    "sibi_test.csv": "e27d515e2a8aa685a2546834e222e8f71792f2b5e1f11d9ba25ae60bbf71897c",
+    "sibi_train.csv": "2fb321ce25236289601ff91654da863fc768a16e22224adc96090ca997b2e0ec",
+    "sibi_val.csv": "25b64e8e383b580a6899206c6536c8a76ad78fd94b7ae511400839fdf008a73d"
+  },
+  "seed": 42,
+  "test_policy": "Do not tune against test; no silent split changes; no signer-independent claim.",
+  "version": "data-v1"
+}

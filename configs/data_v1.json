@@ -1,0 +1,29 @@
+{
+  "version": "data-v1",
+  "seed": 42,
+  "inventory": "reports/dataset_audit/inventory.csv",
+  "audit_summary": "reports/dataset_audit/summary.json",
+  "curation_decisions": "docs/curation_decisions_v1.csv",
+  "label_map": "configs/label_map_v1.json",
+  "output_dir": "data/manifests/data-v1",
+  "report_dir": "reports/data_preparation",
+  "sibi": {
+    "active_variant": "sibi_alphabet_mono_bg_no_augmentation",
+    "source_rule": "Remove Roboflow suffix, image extension token, and bg_NN__ prefix; share the resulting letter_capture key across ALL SIBI variants.",
+    "validation_fraction": 0.15,
+    "test_fraction": 0.15,
+    "quarantine_affected_source_groups": true,
+    "evaluation_status": "source_group_holdout_not_signer_independent"
+  },
+  "bisindo": {
+    "filename_series_splits": {
+      "plain": "train",
+      "AR": "train",
+      "2": "val",
+      "3": "test"
+    },
+    "source_rule": "Keep an entire filename suffix series across all letters in one split. Suffixes are NOT verified participant or session IDs.",
+    "evaluation_status": "provisional_filename_series_holdout_not_signer_independent",
+    "static_class_validation": "pending_stage_2"
+  }
+}

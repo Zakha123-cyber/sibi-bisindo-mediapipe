@@ -1,6 +1,6 @@
 # Acuan penyelesaian MVP AI SIBI dan BISINDO
 
-Status: aktif, tahap audit awal selesai. Terakhir diperbarui: 13 Oktober 2026.
+Status: aktif, audit awal dan manifest/protokol Tahap 1 teknis selesai. Metadata referensi tertentu masih belum tersedia dan dicatat eksplisit. Terakhir diperbarui: 13 Oktober 2026.
 
 Dokumen ini menjadi acuan ruang lingkup, urutan kerja, dan kriteria selesai. Perbarui checklist berdasarkan bukti hasil pekerjaan. Jika pendekatan berubah, catat alasan dan dampaknya pada tabel keputusan di akhir dokumen sebelum melanjutkan pekerjaan yang bergantung padanya.
 
@@ -55,14 +55,17 @@ Selesai untuk audit awal. Validasi linguistik dan ekstraksi seluruh gambar terma
 
 ### Tahap 1 — Manifest data dan protokol evaluasi
 
-- [ ] Lengkapi tautan Mendeley, versi unduhan, lisensi, dan referensi alfabet dalam dokumentasi sumber.
-- [ ] Tinjau 26 gambar bermasalah dan satu label tanpa gambar. Catat keputusan `keep`, `exclude`, atau `override_label` beserta alasan; jangan ubah dataset mentah.
-- [ ] Verifikasi pemetaan ID anotasi SIBI. Label dari nama file tidak dianggap otomatis benar.
-- [ ] Verifikasi aturan kandidat sumber gambar, termasuk hubungan antar latar dan varian; dokumentasikan bila identitas orang/sesi tidak tersedia.
-- [ ] Susun manifest dengan minimal `path`, `language`, `label`, `source_group`, `split`, `include`, serta alasan pengecualian. Tambahkan `signer_id`/`session_id` hanya jika diketahui.
-- [ ] Buat train/validation/test yang memisahkan kelompok sumber; seluruh latar dan augmentasi satu sumber berada pada split yang sama. Gunakan pemisahan orang/sesi bila metadata memungkinkan.
-- [ ] Pastikan kelas yang didukung terwakili dalam tiap split; simpan seed dan aturan pembagian. Kunci test untuk evaluasi akhir.
-- [ ] Tentukan protokol rekaman webcam terpisah, mencakup orang/sesi baru dan kondisi negatif.
+- [x] Dokumentasikan URL Mendeley versi 1, DOI, kontributor, lisensi, rujukan Kamus SIBI, dan batas provenance unduhan lokal di [DATASET_SOURCES.md](DATASET_SOURCES.md).
+- [x] Tinjau 26 gambar bermasalah dan satu label tanpa gambar; keputusan `exclude` beserta alasan/hash dicatat, tujuh kelompok sumber dikarantina, data mentah dipertahankan.
+- [x] Verifikasi konsistensi empiris ID anotasi SIBI terhadap nama file; kasus konflik dikeluarkan. Status belum memiliki konfigurasi kelas resmi dicatat.
+- [x] Periksa aturan sumber SIBI lintas latar/varian secara struktural dan pada contoh visual; dokumentasikan bahwa peserta/sesi tidak tersedia. Seri BISINDO tetap heuristik, bukan identitas orang.
+- [x] Buat manifest lengkap dan manifest aktif dengan path, label, kelompok sumber, split, include, serta alasan pengecualian; ID peserta/sesi kosong bila tidak diketahui.
+- [x] Buat split sumber SIBI dan split seri nama sementara BISINDO; pastikan seluruh turunan satu kelompok konsisten antar varian.
+- [x] Pastikan seluruh kelas kandidat terwakili, simpan seed/aturan, dan kunci snapshot test dengan fingerprint.
+- [x] Tulis [protokol evaluasi webcam](EVALUATION_PROTOCOL.md), mencakup orang/sesi baru dan kondisi negatif; pengambilan data belum dilakukan.
+- [ ] Lengkapi dokumen alfabet BISINDO spesifik, konfigurasi kelas resmi SIBI, serta metadata peserta/sesi jika sumber tambahan tersedia. Pengguna mengonfirmasi belum memiliki metadata tambahan; sementara itu batas klaim tetap berlaku.
+
+Hasil: [laporan Tahap 1](../reports/data_preparation/README.md). SIBI aktif 1.433 gambar; BISINDO 8.040 gambar kandidat. Metadata yang belum tersedia tidak dianggap terverifikasi dan tidak menghalangi eksperimen teknis dengan batas klaim yang jelas.
 
 **Selesai bila:** ada manifest yang dapat direproduksi, keputusan kasus bermasalah tercatat, tidak ada kelompok sumber yang melintasi split, dan batas evaluasi akibat metadata yang belum tersedia ditulis jelas. Split sumber saja tidak membuktikan evaluasi pada orang baru.
 
@@ -130,7 +133,7 @@ Percobaan pose terpisah berarti pengguna mengulang pose, bukan menghitung banyak
 
 ## 6. Aturan menjaga fokus
 
-1. Pekerjaan berikutnya adalah **Tahap 1: manifest data dan protokol evaluasi**. Jangan langsung membangun API atau mengoptimalkan model sebelum fondasi datanya siap.
+1. Pekerjaan berikutnya adalah **Tahap 2: ekstraksi landmark dan fitur dari manifest data-v1**. Jangan langsung membangun API atau memilih model lebih besar sebelum detektor/preprocessing serta cakupan ekstraksinya diperiksa.
 2. Gunakan baseline sederhana terlebih dahulu. Tambahkan CNN/model temporal hanya bila ada bukti kebutuhan; model temporal akan mengubah ruang lingkup MVP statis.
 3. Pertahankan data mentah. Koreksi, pengecualian, dan split disimpan sebagai manifest terpisah.
 4. Test tidak digunakan untuk memilih hyperparameter atau ambang. Jika sudah dipakai untuk iterasi, perlakukan hasil itu sebagai development dan siapkan test baru.
@@ -169,3 +172,8 @@ Artefak model dapat dibagikan terpisah saat integrasi memerlukannya, dengan meta
 | 2026-10-13 | Tinjau pembagian sumber multi-background | Ada 810 kandidat lintas split per varian dan contoh visual kebocoran sumber |
 | 2026-10-13 | Audit deteksi BISINDO sebelum mengunci classifier | 72,1% sampel memiliki minimal satu tangan terdeteksi; belum menjamin kelengkapan pose |
 | 2026-10-13 | Target evaluasi awal ditulis sebagai acuan | Angka pada bagian 5 merupakan target engineering, belum hasil pengujian |
+| 2026-10-13 | Mendeley versi 1 dan lisensi kedua dataset diverifikasi | Metadata sumber dicatat; tanggal unduh/hash arsip serta beberapa referensi belum tersedia |
+| 2026-10-13 | Karantina tujuh kelompok sumber SIBI | 26 gambar bermasalah ditinjau; 158 gambar lintas varian dikeluarkan secara konservatif tanpa relabeling |
+| 2026-10-13 | Split SIBI berdasarkan sumber lintas varian | Seed 42, sekitar 70/15/15; baseline aktif mono: 1.001 train, 216 val, 216 test |
+| 2026-10-13 | Split BISINDO berdasarkan seri nama sementara | Train plain/AR, val 2, test 3; 6.480/780/780; sufiks bukan ID peserta terverifikasi |
+| 2026-10-13 | Snapshot data-v1 dikunci | Manifest/fingerprint dan 14 tes mencegah perubahan split tanpa tercatat; tidak mengklaim signer-independent |

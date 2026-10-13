@@ -1,0 +1,301 @@
+{
+  "checks": {
+    "all_candidate_classes_in_each_split": true,
+    "conflicting_exact_duplicate_labels": 0,
+    "identical_image_overlap": 0,
+    "signer_independence_verified": false,
+    "source_group_overlap": 0
+  },
+  "counts": {
+    "bisindo": {
+      "test": 780,
+      "train": 6480,
+      "val": 780
+    },
+    "sibi": {
+      "test": 216,
+      "train": 1001,
+      "val": 216
+    }
+  },
+  "excluded_images": 30516,
+  "included_images": 9473,
+  "limitations": [
+    "BISINDO suffix groups are unverified filename series, not participant/session IDs.",
+    "SIBI grouping uses common capture keys across variants, supported by structural and sample visual checks.",
+    "Near duplicates and common participants may remain across groups.",
+    "BISINDO classes are candidates pending static-pose validation in stage 2.",
+    "Official SIBI annotation class configuration is not available; mapping is empirically cross-checked."
+  ],
+  "orphan_annotations_excluded": 1,
+  "per_class": {
+    "bisindo": {
+      "A": {
+        "test": 30,
+        "train": 280,
+        "val": 30
+      },
+      "B": {
+        "test": 30,
+        "train": 280,
+        "val": 30
+      },
+      "C": {
+        "test": 30,
+        "train": 280,
+        "val": 30
+      },
+      "D": {
+        "test": 30,
+        "train": 280,
+        "val": 30
+      },
+      "E": {
+        "test": 30,
+        "train": 280,
+        "val": 30
+      },
+      "F": {
+        "test": 30,
+        "train": 280,
+        "val": 30
+      },
+      "G": {
+        "test": 30,
+        "train": 240,
+        "val": 30
+      },
+      "H": {
+        "test": 30,
+        "train": 240,
+        "val": 30
+      },
+      "I": {
+        "test": 30,
+        "train": 240,
+        "val": 30
+      },
+      "J": {
+        "test": 30,
+        "train": 240,
+        "val": 30
+      },
+      "K": {
+        "test": 30,
+        "train": 240,
+        "val": 30
+      },
+      "L": {
+        "test": 30,
+        "train": 240,
+        "val": 30
+      },
+      "M": {
+        "test": 30,
+        "train": 240,
+        "val": 30
+      },
+      "N": {
+        "test": 30,
+        "train": 240,
+        "val": 30
+      },
+      "O": {
+        "test": 30,
+        "train": 240,
+        "val": 30
+      },
+      "P": {
+        "test": 30,
+        "train": 240,
+        "val": 30
+      },
+      "Q": {
+        "test": 30,
+        "train": 240,
+        "val": 30
+      },
+      "R": {
+        "test": 30,
+        "train": 240,
+        "val": 30
+      },
+      "S": {
+        "test": 30,
+        "train": 240,
+        "val": 30
+      },
+      "T": {
+        "test": 30,
+        "train": 240,
+        "val": 30
+      },
+      "U": {
+        "test": 30,
+        "train": 240,
+        "val": 30
+      },
+      "V": {
+        "test": 30,
+        "train": 240,
+        "val": 30
+      },
+      "W": {
+        "test": 30,
+        "train": 240,
+        "val": 30
+      },
+      "X": {
+        "test": 30,
+        "train": 240,
+        "val": 30
+      },
+      "Y": {
+        "test": 30,
+        "train": 240,
+        "val": 30
+      },
+      "Z": {
+        "test": 30,
+        "train": 240,
+        "val": 30
+      }
+    },
+    "sibi": {
+      "A": {
+        "test": 9,
+        "train": 42,
+        "val": 9
+      },
+      "B": {
+        "test": 9,
+        "train": 41,
+        "val": 9
+      },
+      "C": {
+        "test": 9,
+        "train": 42,
+        "val": 9
+      },
+      "D": {
+        "test": 9,
+        "train": 41,
+        "val": 9
+      },
+      "E": {
+        "test": 9,
+        "train": 42,
+        "val": 9
+      },
+      "F": {
+        "test": 9,
+        "train": 42,
+        "val": 9
+      },
+      "G": {
+        "test": 9,
+        "train": 42,
+        "val": 9
+      },
+      "H": {
+        "test": 9,
+        "train": 42,
+        "val": 9
+      },
+      "I": {
+        "test": 9,
+        "train": 41,
+        "val": 9
+      },
+      "K": {
+        "test": 9,
+        "train": 42,
+        "val": 9
+      },
+      "L": {
+        "test": 9,
+        "train": 42,
+        "val": 9
+      },
+      "M": {
+        "test": 9,
+        "train": 42,
+        "val": 9
+      },
+      "N": {
+        "test": 9,
+        "train": 42,
+        "val": 9
+      },
+      "O": {
+        "test": 9,
+        "train": 41,
+        "val": 9
+      },
+      "P": {
+        "test": 9,
+        "train": 41,
+        "val": 9
+      },
+      "Q": {
+        "test": 9,
+        "train": 42,
+        "val": 9
+      },
+      "R": {
+        "test": 9,
+        "train": 42,
+        "val": 9
+      },
+      "S": {
+        "test": 9,
+        "train": 42,
+        "val": 9
+      },
+      "T": {
+        "test": 9,
+        "train": 42,
+        "val": 9
+      },
+      "U": {
+        "test": 9,
+        "train": 42,
+        "val": 9
+      },
+      "V": {
+        "test": 9,
+        "train": 41,
+        "val": 9
+      },
+      "W": {
+        "test": 9,
+        "train": 42,
+        "val": 9
+      },
+      "X": {
+        "test": 9,
+        "train": 41,
+        "val": 9
+      },
+      "Y": {
+        "test": 9,
+        "train": 42,
+        "val": 9
+      }
+    }
+  },
+  "quarantine_images": 158,
+  "quarantined_source_groups": [
+    "sibi:B_0",
+    "sibi:D_92",
+    "sibi:I_115",
+    "sibi:O_76",
+    "sibi:P_106",
+    "sibi:V_76",
+    "sibi:X_11"
+  ],
+  "reviewed_records": 27,
+  "sibi_source_groups_before_quarantine": 1440,
+  "total_images": 39989,
+  "version": "data-v1"
+}

@@ -1,0 +1,1 @@
+participant_id,session_id,trial_id,split,mode,label_or_negative_type,camera,resolution,mirrored,lighting,stable_start_ms,stable_end_ms,consent_recorded

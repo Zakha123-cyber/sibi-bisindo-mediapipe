@@ -53,6 +53,11 @@ dist/
 !/reports/dataset_audit/landmark_summary.json
 !/reports/dataset_audit/review_required.csv
 !/reports/dataset_audit/background_source_candidate_sample.json
+!/reports/data_preparation/
+/reports/data_preparation/*
+!/reports/data_preparation/*.md
+!/reports/data_preparation/summary.json
+!/reports/data_preparation/split_lock.json
 
 # Notebook source stays in Git; executed copies stay local.
 .ipynb_checkpoints/

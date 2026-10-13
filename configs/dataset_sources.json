@@ -1,0 +1,39 @@
+{
+  "verified_on": "2026-10-13",
+  "local_download_date": null,
+  "local_archive_checksum": null,
+  "local_version_basis": "User-provided version-1 URLs; local archives were not independently matched to server checksums.",
+  "datasets": {
+    "SIBI": {
+      "title": "Labeled Official Indonesian Sign Language (SIBI) Alphabet",
+      "url": "https://data.mendeley.com/datasets/yhsgmynccf/1",
+      "doi": "10.17632/yhsgmynccf.1",
+      "version": 1,
+      "published": "2024-05-22",
+      "contributors": ["Teguh Andriyanto"],
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "local_directory": "dataset/Labeled Official Indonesian Sign Language (SIBI) Alphabet",
+      "alphabet_reference": "https://pkplk.kemendikdasmen.go.id/sibi/",
+      "alphabet_reference_status": "Official SIBI dictionary located; exact dataset class configuration and pose-by-pose expert validation unavailable.",
+      "signer_session_mapping": null
+    },
+    "BISINDO": {
+      "title": "BISINDO DATASET",
+      "url": "https://data.mendeley.com/datasets/4xnkvr88tk/1",
+      "doi": "10.17632/4xnkvr88tk.1",
+      "version": 1,
+      "published": "2026-07-03",
+      "contributors": ["Arya Raden", "MUHAMMAD ASSHAFI"],
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "local_directory": "dataset/BISINDO DATASET/Mendeley BISINDO",
+      "reported_participants": 7,
+      "reported_camera": "ELP 180-degree fisheye USB camera",
+      "reported_hand_distance_cm": [30, 60],
+      "alphabet_reference": null,
+      "alphabet_reference_status": "Publisher attributes gestures to a ministry alphabet reference but does not identify the specific document on the dataset page; user has no additional metadata.",
+      "signer_session_mapping": null
+    }
+  }
+}
