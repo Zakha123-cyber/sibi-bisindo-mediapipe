@@ -1,0 +1,16 @@
+{
+  "version": "landmark-selection-v1",
+  "selected_config": "configs/landmarks_v1.json",
+  "selected_config_sha256": "efdbc7028b89c7825d8a9dd1ea45e5e49ac841ec9887e1fade10712ad555b5d4",
+  "selection_split": "validation_only",
+  "decision": "RGB input without contrast enhancement (contrast=none)",
+  "evidence": "reports/landmarks/pilot_comparison.json",
+  "rationale": [
+    "SIBI: baseline has 215/216 feature-valid frames versus CLAHE 214/216; CLAHE adds one missed frame and is slower in this run.",
+    "BISINDO: CLAHE changes 17/780 frames (9 gains, 8 losses), only one net feature-valid frame; it is slower in this run.",
+    "These are geometry/policy coverage counts, not recognition accuracy or proof of correct landmarks.",
+    "Final extraction uses a fresh cache directory because the implementation provenance changed after the validation pilot; pilot caches are not mixed with the final feature cache."
+  ],
+  "frozen_before_test_feature_extraction": true,
+  "output_dir": "data/features/landmarks-v1-final"
+}

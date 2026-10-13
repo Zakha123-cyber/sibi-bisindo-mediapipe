@@ -1,0 +1,7 @@
+# Locked baseline used for offline extraction and the initial CPU service.
+# Use Python 3.12. This preserves the audited legacy Hands API.
+mediapipe==0.10.21
+numpy==1.26.4
+Pillow==11.3.0
+opencv-contrib-python==4.11.0.86
+protobuf==4.25.8

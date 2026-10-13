@@ -1,0 +1,46 @@
+{
+  "evaluation_split": "validation_only",
+  "compared": "RGB unchanged vs LAB-luminance CLAHE clip=2 grid=8",
+  "results": {
+    "sibi": {
+      "total": 216,
+      "baseline_feature_valid": 215,
+      "clahe_feature_valid": 214,
+      "baseline_hand_counts": {
+        "1": 215,
+        "0": 1
+      },
+      "clahe_hand_counts": {
+        "1": 214,
+        "0": 2
+      },
+      "gains": 0,
+      "losses": 1,
+      "baseline_median_ms": 20.645401000976562,
+      "clahe_median_ms": 23.91069984436035
+    },
+    "bisindo": {
+      "total": 780,
+      "baseline_feature_valid": 762,
+      "clahe_feature_valid": 763,
+      "baseline_hand_counts": {
+        "2": 442,
+        "1": 320,
+        "0": 18
+      },
+      "clahe_hand_counts": {
+        "2": 458,
+        "1": 305,
+        "0": 17
+      },
+      "gains": 9,
+      "losses": 8,
+      "baseline_median_ms": 28.279998779296875,
+      "clahe_median_ms": 29.08489990234375
+    }
+  },
+  "limitations": [
+    "No negative ground-truth validation set available yet.",
+    "Coverage gains do not establish landmark correctness, same-actor assignment or lower false acceptance."
+  ]
+}

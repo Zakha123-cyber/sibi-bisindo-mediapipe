@@ -29,6 +29,10 @@ Sampling ini memakai MediaPipe 0.10.21 dengan API legacy yang tersedia saat audi
 
 Notebook dapat dibuka melalui editor yang mendukung Jupyter dengan kernel dari lingkungan tersebut. Secara default notebook membaca hasil tersimpan; aktifkan flag yang tersedia jika ingin menjalankan audit ulang.
 
+## Tahap 2: ekstraksi landmark
+
+Kontrak fitur, konfigurasi terpilih, batas interpretasi, dan perintah reproduksi ada di [FEATURE_SCHEMA.md](docs/FEATURE_SCHEMA.md) dan [laporan Tahap 2](reports/landmarks/README.md). Instal `requirements-features.txt`, lalu jalankan `python scripts/extract_landmarks.py --splits train val test`. Ekstraksi test hanya diizinkan setelah konfigurasi dibekukan dari validation. Cache dan log per gambar tetap lokal; ringkasan ukuran kecil dapat dilacak Git.
+
 ## File untuk GitHub
 
 `.gitignore` mengecualikan dataset, fitur, model, rekaman, environment, secrets, cache, hasil eksperimen, serta laporan detail hasil generate. Kode, dokumentasi, notebook sumber, dan ringkasan audit tetap dapat di-commit.

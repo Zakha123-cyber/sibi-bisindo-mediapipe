@@ -1,0 +1,47 @@
+{
+  "version": "landmarks-v1",
+  "data_version": "data-v1",
+  "feature_version": "hand-geometry-v1",
+  "feature_dimension": 132,
+  "manifest_dir": "data/manifests/data-v1",
+  "output_dir": "data/features/landmarks-v1-final",
+  "api": "mediapipe.solutions.hands.Hands",
+  "dependencies": {
+    "mediapipe": "0.10.21",
+    "numpy": "1.26.4",
+    "Pillow": "11.3.0",
+    "opencv-contrib-python": "4.11.0.86",
+    "protobuf": "4.25.8"
+  },
+  "detector": {
+    "static_image_mode": true,
+    "max_num_hands": 2,
+    "model_complexity": 1,
+    "min_detection_confidence": 0.5,
+    "min_tracking_confidence": 0.5
+  },
+  "preprocessing": {
+    "color": "RGB",
+    "exif_transpose": true,
+    "contrast": "none",
+    "resize": "none",
+    "offline_input_mirrored": false
+  },
+  "feature_policy": {
+    "slot_order": "ascending_image_wrist_x_then_y",
+    "coordinates": "x_y_corrected_for_aspect_ratio_and_relative_z",
+    "normalization": "subtract_each_wrist_divide_by_mean_2d_wrist_to_MCP_length",
+    "retain_orientation": true,
+    "pair_features": "relative_wrist_xy_and_palm_scale_ratios",
+    "handedness_is_feature": false,
+    "no_hand_features": "NaN_with_valid_mask_false",
+    "sibi_required_hands": 1,
+    "bisindo_required_hands": null,
+    "minimum_palm_scale": 1e-06
+  },
+  "bundled_model_sha256": {
+    "modules/hand_landmark/hand_landmark_full.tflite": "11c272b891e1a99ab034208e23937a8008388cf11ed2a9d776ed3d01d0ba00e3",
+    "modules/palm_detection/palm_detection_full.tflite": "1b14e9422c6ad006cde6581a46c8b90dd573c07ab7f3934b5589e7cea3f89a54",
+    "modules/hand_landmark/hand_landmark_tracking_cpu.binarypb": "942ad4e6b3ecd1903fd2743ad2255a341854de975ef9c90418a4c7b64f0b4425"
+  }
+}

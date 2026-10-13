@@ -1,0 +1,17 @@
+{
+  "config_sha256": "efdbc7028b89c7825d8a9dd1ea45e5e49ac841ec9887e1fade10712ad555b5d4",
+  "dependencies": {
+    "Pillow": "11.3.0",
+    "mediapipe": "0.10.21",
+    "numpy": "1.26.4",
+    "opencv-contrib-python": "4.11.0.86",
+    "protobuf": "4.25.8"
+  },
+  "feature_implementation_sha256": "41b2754775f9e83e4803b5e1c7e85dbfc9a30cdbfd5d379363d7d98765789ac4",
+  "feature_version": "hand-geometry-v1",
+  "models": {
+    "modules/hand_landmark/hand_landmark_full.tflite": "11c272b891e1a99ab034208e23937a8008388cf11ed2a9d776ed3d01d0ba00e3",
+    "modules/hand_landmark/hand_landmark_tracking_cpu.binarypb": "942ad4e6b3ecd1903fd2743ad2255a341854de975ef9c90418a4c7b64f0b4425",
+    "modules/palm_detection/palm_detection_full.tflite": "1b14e9422c6ad006cde6581a46c8b90dd573c07ab7f3934b5589e7cea3f89a54"
+  }
+}

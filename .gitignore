@@ -58,6 +58,13 @@ dist/
 !/reports/data_preparation/*.md
 !/reports/data_preparation/summary.json
 !/reports/data_preparation/split_lock.json
+!/reports/landmarks/
+/reports/landmarks/*
+!/reports/landmarks/README.md
+!/reports/landmarks/summary.md
+!/reports/landmarks/pilot_comparison.json
+!/reports/landmarks/summary.json
+!/reports/landmarks/extraction_lock.json
 
 # Notebook source stays in Git; executed copies stay local.
 .ipynb_checkpoints/

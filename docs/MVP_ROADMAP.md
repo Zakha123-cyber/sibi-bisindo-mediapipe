@@ -1,6 +1,6 @@
 # Acuan penyelesaian MVP AI SIBI dan BISINDO
 
-Status: aktif, audit awal dan manifest/protokol Tahap 1 teknis selesai. Metadata referensi tertentu masih belum tersedia dan dicatat eksplisit. Terakhir diperbarui: 13 Oktober 2026.
+Status: aktif, Tahap 1 dan ekstraksi teknis Tahap 2 selesai; validasi referensi pose masih terbuka. Referensi pose BISINDO dan metadata peserta tertentu belum tersedia dan dicatat eksplisit. Terakhir diperbarui: 13 Oktober 2026.
 
 Dokumen ini menjadi acuan ruang lingkup, urutan kerja, dan kriteria selesai. Perbarui checklist berdasarkan bukti hasil pekerjaan. Jika pendekatan berubah, catat alasan dan dampaknya pada tabel keputusan di akhir dokumen sebelum melanjutkan pekerjaan yang bergantung padanya.
 
@@ -28,7 +28,7 @@ MVP tidak mencakup penyusunan kata/kalimat, penerjemahan percakapan, pengenalan 
 | Kondisi tangan | Maksimal dua tangan; pertahankan posisi relatif antartangan |
 | Ketidakpastian | Hasil boleh ditolak; sistem tidak wajib mengeluarkan huruf setiap frame |
 
-MediaPipe versi produksi belum dikunci. Audit eksplorasi menggunakan **0.10.21, API legacy Hands**. Sebelum ekstraksi penuh, pilih API/model detektor, kunci versinya, dan gunakan konfigurasi preprocessing yang sama pada training serta inferensi. Hasil audit perlu diperiksa ulang jika detektornya berubah.
+MediaPipe baseline Tahap 2 dikunci pada **0.10.21, API legacy Hands** dan konfigurasi `landmarks-v1`; konfigurasi serta kontrak fitur ada di [FEATURE_SCHEMA.md](FEATURE_SCHEMA.md). Ini belum pengesahan model produksi: webcam perlu diuji pada tahap integrasi. Hasil perlu diperiksa ulang jika detektor berubah.
 
 ## 3. Bukti audit yang menjadi dasar
 
@@ -65,18 +65,18 @@ Selesai untuk audit awal. Validasi linguistik dan ekstraksi seluruh gambar terma
 - [x] Tulis [protokol evaluasi webcam](EVALUATION_PROTOCOL.md), mencakup orang/sesi baru dan kondisi negatif; pengambilan data belum dilakukan.
 - [ ] Lengkapi dokumen alfabet BISINDO spesifik, konfigurasi kelas resmi SIBI, serta metadata peserta/sesi jika sumber tambahan tersedia. Pengguna mengonfirmasi belum memiliki metadata tambahan; sementara itu batas klaim tetap berlaku.
 
-Hasil: [laporan Tahap 1](../reports/data_preparation/README.md). SIBI aktif 1.433 gambar; BISINDO 8.040 gambar kandidat. Metadata yang belum tersedia tidak dianggap terverifikasi dan tidak menghalangi eksperimen teknis dengan batas klaim yang jelas.
+Hasil Tahap 1: [laporan data](../reports/data_preparation/README.md). Hasil Tahap 2: [laporan ekstraksi landmark](../reports/landmarks/README.md) dan [kontrak fitur](FEATURE_SCHEMA.md). Ekstraksi teknis selesai, namun kriteria penetapan kelas/kelengkapan pose BISINDO belum selesai; dataset menunjukkan pergeseran cakupan deteksi besar antar split. Ekstraksi teknis tidak mengesahkan kelas alfabet BISINDO atau generalisasi peserta.
 
 **Selesai bila:** ada manifest yang dapat direproduksi, keputusan kasus bermasalah tercatat, tidak ada kelompok sumber yang melintasi split, dan batas evaluasi akibat metadata yang belum tersedia ditulis jelas. Split sumber saja tidak membuktikan evaluasi pada orang baru.
 
 ### Tahap 2 — Ekstraksi landmark dan fitur
 
-- [ ] Kunci detektor, versi dependency, konfigurasi, serta perlakuan frame yang dicerminkan.
-- [ ] Ekstrak seluruh data SIBI mono yang disertakan; simpan hasil agar eksperimen tidak mengulang deteksi.
-- [ ] Tinjau dan ukur ekstraksi BISINDO per kelas, termasuk kelengkapan tangan dan pemilihan tangan pelaku utama.
-- [ ] Tentukan fitur: landmark ternormalisasi, keberadaan tangan, urutan tangan konsisten, dan posisi relatif antartangan. Normalisasi tidak boleh membuang orientasi yang membedakan huruf.
-- [ ] Simpan log kegagalan deteksi dan contoh visual. Gambar gagal tidak diubah menjadi vektor nol berlabel huruf biasa.
-- [ ] Validasi ulang daftar kelas statis BISINDO bersama referensi/pihak yang memahami alfabetnya; kelas yang belum layak ditandai belum didukung.
+- [x] Kunci detektor, versi dependency, konfigurasi, serta perlakuan frame yang dicerminkan.
+- [x] Ekstrak seluruh data SIBI mono yang disertakan; simpan hasil agar eksperimen tidak mengulang deteksi.
+- [x] Ukur ekstraksi BISINDO per kelas; kelengkapan tangan dan pemilihan tangan pelaku utama tetap belum terverifikasi.
+- [x] Tentukan fitur: landmark ternormalisasi, keberadaan tangan, urutan tangan konsisten, dan posisi relatif antartangan. Normalisasi mempertahankan orientasi.
+- [x] Simpan log kegagalan deteksi dan contoh visual. Gambar gagal tidak diubah menjadi vektor nol berlabel huruf biasa.
+- [ ] Validasi daftar kelas statis BISINDO bersama referensi/pihak yang memahami alfabetnya; kelas yang belum layak ditandai belum didukung. Dataset train menunjukkan cakupan deteksi jauh lebih rendah (65,35%) daripada validation/test (97,69%/98,72%); tinjau ketimpangan ini sebelum klaim classifier.
 
 **Selesai bila:** fitur dan preprocessing memiliki versi, cakupan ekstraksi per kelas diketahui, sampel landmark ditinjau visual, dan perilaku ketika tangan hilang/tidak lengkap ditetapkan.
 
