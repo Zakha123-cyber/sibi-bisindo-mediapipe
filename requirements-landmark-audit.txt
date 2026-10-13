@@ -1,0 +1,4 @@
+-r requirements-audit.txt
+# Reproduce the installed legacy API used for this exploratory audit.
+mediapipe==0.10.21
+numpy>=1.26,<2

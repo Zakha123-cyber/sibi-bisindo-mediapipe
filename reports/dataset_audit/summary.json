@@ -1,0 +1,302 @@
+{
+  "variants": {
+    "BISINDO/Mendeley BISINDO": {
+      "images": 8040,
+      "classes": {
+        "A": 340,
+        "B": 340,
+        "C": 340,
+        "D": 340,
+        "E": 340,
+        "F": 340,
+        "G": 300,
+        "H": 300,
+        "I": 300,
+        "J": 300,
+        "K": 300,
+        "L": 300,
+        "M": 300,
+        "N": 300,
+        "O": 300,
+        "P": 300,
+        "Q": 300,
+        "R": 300,
+        "S": 300,
+        "T": 300,
+        "U": 300,
+        "V": 300,
+        "W": 300,
+        "X": 300,
+        "Y": 300,
+        "Z": 300
+      },
+      "splits": {
+        "unsplit": 8040
+      },
+      "dimensions": {
+        "640x480": 8040
+      },
+      "corrupt": 0,
+      "annotation_errors": 0,
+      "empty_annotations": 0
+    },
+    "SIBI/sibi_alphabet_mono_bg_no_augmentation": {
+      "images": 1440,
+      "classes": {
+        "A": 60,
+        "B": 60,
+        "C": 60,
+        "D": 60,
+        "E": 60,
+        "F": 60,
+        "G": 60,
+        "H": 60,
+        "I": 60,
+        "K": 60,
+        "L": 60,
+        "M": 60,
+        "N": 60,
+        "O": 60,
+        "P": 60,
+        "Q": 60,
+        "R": 60,
+        "S": 60,
+        "T": 60,
+        "U": 60,
+        "V": 60,
+        "W": 60,
+        "X": 60,
+        "Y": 60
+      },
+      "splits": {
+        "test": 75,
+        "train": 1215,
+        "val": 150
+      },
+      "dimensions": {
+        "640x640": 1440
+      },
+      "corrupt": 0,
+      "annotation_errors": 0,
+      "empty_annotations": 0
+    },
+    "SIBI/sibi_alphabet_mono_bg_with_augmentation": {
+      "images": 3870,
+      "classes": {
+        "A": 162,
+        "B": 162,
+        "C": 162,
+        "D": 162,
+        "E": 162,
+        "F": 144,
+        "G": 162,
+        "H": 162,
+        "I": 162,
+        "K": 162,
+        "L": 162,
+        "M": 162,
+        "N": 162,
+        "O": 162,
+        "P": 162,
+        "Q": 162,
+        "R": 162,
+        "S": 162,
+        "T": 162,
+        "U": 162,
+        "V": 162,
+        "W": 162,
+        "X": 162,
+        "Y": 162
+      },
+      "splits": {
+        "test": 75,
+        "train": 3645,
+        "val": 150
+      },
+      "dimensions": {
+        "640x640": 3870
+      },
+      "corrupt": 0,
+      "annotation_errors": 0,
+      "empty_annotations": 0
+    },
+    "SIBI/sibi_alphabet_multi_bg_no_augmentation": {
+      "images": 7200,
+      "classes": {
+        "A": 300,
+        "B": 300,
+        "C": 300,
+        "D": 300,
+        "E": 300,
+        "F": 300,
+        "G": 300,
+        "H": 300,
+        "I": 300,
+        "K": 300,
+        "L": 300,
+        "M": 300,
+        "N": 300,
+        "O": 300,
+        "P": 300,
+        "Q": 300,
+        "R": 300,
+        "S": 300,
+        "T": 300,
+        "U": 300,
+        "V": 300,
+        "W": 300,
+        "X": 300,
+        "Y": 300
+      },
+      "splits": {
+        "test": 360,
+        "train": 6120,
+        "val": 720
+      },
+      "dimensions": {
+        "640x640": 7200
+      },
+      "corrupt": 0,
+      "annotation_errors": 4,
+      "empty_annotations": 4
+    },
+    "SIBI/sibi_alphabet_multi_bg_with_augmentation": {
+      "images": 19439,
+      "classes": {
+        "A": 810,
+        "B": 810,
+        "C": 810,
+        "D": 810,
+        "E": 810,
+        "F": 810,
+        "G": 810,
+        "H": 809,
+        "I": 810,
+        "K": 810,
+        "L": 810,
+        "M": 810,
+        "N": 810,
+        "O": 810,
+        "P": 810,
+        "Q": 810,
+        "R": 810,
+        "S": 810,
+        "T": 810,
+        "U": 810,
+        "V": 810,
+        "W": 810,
+        "X": 810,
+        "Y": 810
+      },
+      "splits": {
+        "test": 360,
+        "train": 18359,
+        "val": 720
+      },
+      "dimensions": {
+        "640x640": 19439
+      },
+      "corrupt": 0,
+      "annotation_errors": 10,
+      "empty_annotations": 10
+    }
+  },
+  "sibi_filename_to_annotation_ids": {
+    "A": {
+      "0": 1332
+    },
+    "B": {
+      "1": 1328,
+      "18": 4
+    },
+    "C": {
+      "2": 1332
+    },
+    "D": {
+      "3": 1328,
+      "": 4
+    },
+    "E": {
+      "4": 1332
+    },
+    "F": {
+      "5": 1314
+    },
+    "G": {
+      "6": 1332
+    },
+    "H": {
+      "7": 1331
+    },
+    "I": {
+      "8": 1328,
+      "": 4
+    },
+    "K": {
+      "9": 1332
+    },
+    "L": {
+      "10": 1332
+    },
+    "M": {
+      "11": 1332
+    },
+    "N": {
+      "12": 1332
+    },
+    "O": {
+      "13": 1330,
+      "": 2
+    },
+    "P": {
+      "14": 1328,
+      "18": 4
+    },
+    "Q": {
+      "15": 1332
+    },
+    "R": {
+      "16": 1332
+    },
+    "S": {
+      "17": 1332
+    },
+    "T": {
+      "18": 1332
+    },
+    "U": {
+      "19": 1332
+    },
+    "V": {
+      "20": 1328,
+      "": 4
+    },
+    "W": {
+      "21": 1332
+    },
+    "X": {
+      "22": 1328,
+      "18": 4
+    },
+    "Y": {
+      "23": 1332
+    }
+  },
+  "orphan_labels": [
+    "Labeled Official Indonesian Sign Language (SIBI) Alphabet\\sibi_alphabet_multi_bg_with_augmentation\\labels\\train\\H\\bg_04__H_116_png.rf.cbbab358c33ed017969777e07bc10fd0.txt"
+  ],
+  "duplicate_summary": {
+    "sha256": {
+      "groups": 8639,
+      "cross_split_groups": 0,
+      "cross_variant_groups": 8639,
+      "conflicting_letter_groups": 0
+    },
+    "origin": {
+      "groups": 8640,
+      "cross_split_groups": 0,
+      "cross_variant_groups": 8640,
+      "conflicting_letter_groups": 0
+    }
+  }
+}

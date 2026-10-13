@@ -1,0 +1,22 @@
+{
+  "variant": "sibi_alphabet_multi_bg_no_augmentation",
+  "candidate_capture": "A_10",
+  "splits": [
+    "train",
+    "val"
+  ],
+  "backgrounds": [
+    "bg_01",
+    "bg_02",
+    "bg_03",
+    "bg_04",
+    "bg_05"
+  ],
+  "paths": [
+    "Labeled Official Indonesian Sign Language (SIBI) Alphabet\\sibi_alphabet_multi_bg_no_augmentation\\images\\train\\bg_01__A_10_png.rf.8a5555820d1b11b157bdf5408b18bb25.jpg",
+    "Labeled Official Indonesian Sign Language (SIBI) Alphabet\\sibi_alphabet_multi_bg_no_augmentation\\images\\train\\bg_02__A_10_png.rf.836d640ec22d8f22956fc7a9fb60570b.jpg",
+    "Labeled Official Indonesian Sign Language (SIBI) Alphabet\\sibi_alphabet_multi_bg_no_augmentation\\images\\train\\bg_04__A_10_png.rf.413b877317ea4f4bce0fc5cd6a190608.jpg",
+    "Labeled Official Indonesian Sign Language (SIBI) Alphabet\\sibi_alphabet_multi_bg_no_augmentation\\images\\train\\bg_05__A_10_png.rf.2e1ec63a734b66ddc8f64229481fcea2.jpg",
+    "Labeled Official Indonesian Sign Language (SIBI) Alphabet\\sibi_alphabet_multi_bg_no_augmentation\\images\\val\\bg_03__A_10_png.rf.009c989388b24634f04792084bab16e6.jpg"
+  ]
+}
