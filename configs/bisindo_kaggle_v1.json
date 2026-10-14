@@ -1,0 +1,18 @@
+{
+  "version": "bisindo-kaggle-v1",
+  "dataset_root": "Indonesian Sign Language - BISINDO",
+  "seed": 42,
+  "classes": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
+  "perceptual_hash": {
+    "algorithm": "opencv-contrib img_hash.pHash 64-bit",
+    "max_hamming_distance": 2,
+    "group_within_class_only": true
+  },
+  "split_fractions": {
+    "train": 0.7,
+    "val": 0.15,
+    "test": 0.15
+  },
+  "output_dir": "data/manifests/bisindo-kaggle-v1",
+  "report_dir": "reports/bisindo_kaggle_v1"
+}

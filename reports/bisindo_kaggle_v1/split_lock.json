@@ -1,0 +1,7 @@
+{
+  "config_sha256": "6bda74162f3a40a19b55dcd59cc2904b0d8869aa2b8378e2a3617b5d5cd86dae",
+  "manifest_sha256": "dc6fa7b12d981697271596f760acb3f461d61005bcccbd4fc93f3d81514312b4",
+  "phash_components": "opencv-contrib-pHash-hamming<=2-within-class",
+  "summary_sha256": "febed4927676b7b429507d1d6f0b1f8332ee36144a22df4e5cd25b9be65d7b4e",
+  "version": "bisindo-kaggle-v1"
+}

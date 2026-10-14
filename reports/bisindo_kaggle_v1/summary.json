@@ -1,0 +1,318 @@
+{
+  "config_sha256": "6bda74162f3a40a19b55dcd59cc2904b0d8869aa2b8378e2a3617b5d5cd86dae",
+  "excluded_images": {
+    "empty_label_file": 1,
+    "missing_label_file": 1
+  },
+  "feature_note": "YOLO box annotations are checked but not consumed by the current hand-landmark pipeline.",
+  "included_images": 11468,
+  "limitations": [
+    "Perceptual-hash components are conservative image-source candidates, not verified original-capture IDs.",
+    "No participant or session metadata was supplied; this is not signer-independent.",
+    "Original Kaggle train/val split had cross-split exact and near-duplicate content; the new split regroups perceptually similar images.",
+    "License/citation metadata was absent from the downloaded directory and requires verification on the dataset source page.",
+    "No model training or test metrics are included."
+  ],
+  "source_grouping": {
+    "exact_hash_train_val_overlap_after_assignment": 0,
+    "groups_by_class": {
+      "A": {
+        "cross_original_split_groups": 17,
+        "cross_original_split_images": 123,
+        "largest_group": 19,
+        "multi_image_groups": 31,
+        "source_groups": 292
+      },
+      "B": {
+        "cross_original_split_groups": 15,
+        "cross_original_split_images": 196,
+        "largest_group": 75,
+        "multi_image_groups": 26,
+        "source_groups": 240
+      },
+      "C": {
+        "cross_original_split_groups": 17,
+        "cross_original_split_images": 204,
+        "largest_group": 73,
+        "multi_image_groups": 28,
+        "source_groups": 229
+      },
+      "D": {
+        "cross_original_split_groups": 14,
+        "cross_original_split_images": 193,
+        "largest_group": 74,
+        "multi_image_groups": 23,
+        "source_groups": 244
+      },
+      "E": {
+        "cross_original_split_groups": 17,
+        "cross_original_split_images": 98,
+        "largest_group": 9,
+        "multi_image_groups": 28,
+        "source_groups": 338
+      },
+      "F": {
+        "cross_original_split_groups": 15,
+        "cross_original_split_images": 190,
+        "largest_group": 67,
+        "multi_image_groups": 26,
+        "source_groups": 256
+      },
+      "G": {
+        "cross_original_split_groups": 10,
+        "cross_original_split_images": 191,
+        "largest_group": 77,
+        "multi_image_groups": 23,
+        "source_groups": 248
+      },
+      "H": {
+        "cross_original_split_groups": 14,
+        "cross_original_split_images": 178,
+        "largest_group": 70,
+        "multi_image_groups": 28,
+        "source_groups": 251
+      },
+      "I": {
+        "cross_original_split_groups": 13,
+        "cross_original_split_images": 135,
+        "largest_group": 26,
+        "multi_image_groups": 34,
+        "source_groups": 295
+      },
+      "J": {
+        "cross_original_split_groups": 13,
+        "cross_original_split_images": 148,
+        "largest_group": 40,
+        "multi_image_groups": 27,
+        "source_groups": 288
+      },
+      "K": {
+        "cross_original_split_groups": 12,
+        "cross_original_split_images": 190,
+        "largest_group": 73,
+        "multi_image_groups": 25,
+        "source_groups": 233
+      },
+      "L": {
+        "cross_original_split_groups": 10,
+        "cross_original_split_images": 160,
+        "largest_group": 69,
+        "multi_image_groups": 27,
+        "source_groups": 263
+      },
+      "M": {
+        "cross_original_split_groups": 12,
+        "cross_original_split_images": 166,
+        "largest_group": 59,
+        "multi_image_groups": 23,
+        "source_groups": 264
+      },
+      "N": {
+        "cross_original_split_groups": 11,
+        "cross_original_split_images": 164,
+        "largest_group": 44,
+        "multi_image_groups": 28,
+        "source_groups": 266
+      },
+      "O": {
+        "cross_original_split_groups": 14,
+        "cross_original_split_images": 169,
+        "largest_group": 38,
+        "multi_image_groups": 27,
+        "source_groups": 278
+      },
+      "P": {
+        "cross_original_split_groups": 11,
+        "cross_original_split_images": 63,
+        "largest_group": 13,
+        "multi_image_groups": 23,
+        "source_groups": 381
+      },
+      "Q": {
+        "cross_original_split_groups": 9,
+        "cross_original_split_images": 184,
+        "largest_group": 76,
+        "multi_image_groups": 20,
+        "source_groups": 238
+      },
+      "R": {
+        "cross_original_split_groups": 10,
+        "cross_original_split_images": 170,
+        "largest_group": 68,
+        "multi_image_groups": 27,
+        "source_groups": 243
+      },
+      "S": {
+        "cross_original_split_groups": 15,
+        "cross_original_split_images": 192,
+        "largest_group": 70,
+        "multi_image_groups": 27,
+        "source_groups": 233
+      },
+      "T": {
+        "cross_original_split_groups": 13,
+        "cross_original_split_images": 197,
+        "largest_group": 71,
+        "multi_image_groups": 22,
+        "source_groups": 254
+      },
+      "U": {
+        "cross_original_split_groups": 14,
+        "cross_original_split_images": 235,
+        "largest_group": 86,
+        "multi_image_groups": 23,
+        "source_groups": 209
+      },
+      "V": {
+        "cross_original_split_groups": 14,
+        "cross_original_split_images": 180,
+        "largest_group": 69,
+        "multi_image_groups": 31,
+        "source_groups": 256
+      },
+      "W": {
+        "cross_original_split_groups": 13,
+        "cross_original_split_images": 178,
+        "largest_group": 67,
+        "multi_image_groups": 24,
+        "source_groups": 272
+      },
+      "X": {
+        "cross_original_split_groups": 14,
+        "cross_original_split_images": 198,
+        "largest_group": 71,
+        "multi_image_groups": 22,
+        "source_groups": 240
+      },
+      "Y": {
+        "cross_original_split_groups": 9,
+        "cross_original_split_images": 151,
+        "largest_group": 45,
+        "multi_image_groups": 15,
+        "source_groups": 262
+      },
+      "Z": {
+        "cross_original_split_groups": 11,
+        "cross_original_split_images": 183,
+        "largest_group": 60,
+        "multi_image_groups": 25,
+        "source_groups": 261
+      }
+    },
+    "max_hamming_distance": 2,
+    "method": "opencv-contrib img_hash.pHash 64-bit",
+    "within_class_only": true
+  },
+  "splits": {
+    "test": {
+      "original_split_images": {
+        "train": 1365,
+        "val": 333
+      },
+      "per_class": {
+        "A": 66,
+        "B": 48,
+        "C": 64,
+        "D": 65,
+        "E": 67,
+        "F": 67,
+        "G": 68,
+        "H": 44,
+        "I": 67,
+        "J": 68,
+        "K": 65,
+        "L": 67,
+        "M": 67,
+        "N": 66,
+        "O": 81,
+        "P": 67,
+        "Q": 54,
+        "R": 66,
+        "S": 64,
+        "T": 67,
+        "U": 48,
+        "V": 97,
+        "W": 68,
+        "X": 67,
+        "Y": 62,
+        "Z": 68
+      },
+      "source_groups": 1209,
+      "total": 1698
+    },
+    "train": {
+      "original_split_images": {
+        "train": 6375,
+        "val": 1607
+      },
+      "per_class": {
+        "A": 306,
+        "B": 307,
+        "C": 272,
+        "D": 332,
+        "E": 312,
+        "F": 310,
+        "G": 315,
+        "H": 304,
+        "I": 315,
+        "J": 315,
+        "K": 304,
+        "L": 322,
+        "M": 287,
+        "N": 307,
+        "O": 313,
+        "P": 313,
+        "Q": 304,
+        "R": 299,
+        "S": 300,
+        "T": 293,
+        "U": 310,
+        "V": 313,
+        "W": 315,
+        "X": 311,
+        "Y": 288,
+        "Z": 315
+      },
+      "source_groups": 4666,
+      "total": 7982
+    },
+    "val": {
+      "original_split_images": {
+        "train": 1427,
+        "val": 361
+      },
+      "per_class": {
+        "A": 66,
+        "B": 83,
+        "C": 93,
+        "D": 38,
+        "E": 62,
+        "F": 70,
+        "G": 67,
+        "H": 87,
+        "I": 68,
+        "J": 67,
+        "K": 66,
+        "L": 57,
+        "M": 90,
+        "N": 65,
+        "O": 53,
+        "P": 67,
+        "Q": 77,
+        "R": 73,
+        "S": 65,
+        "T": 90,
+        "U": 86,
+        "V": 37,
+        "W": 67,
+        "X": 66,
+        "Y": 61,
+        "Z": 67
+      },
+      "source_groups": 959,
+      "total": 1788
+    }
+  },
+  "total_images": 11470,
+  "version": "bisindo-kaggle-v1"
+}

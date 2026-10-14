@@ -39,6 +39,26 @@ def atomic_npz(path, arrays):
 
 def load_manifest(config, language, split):
     directory=ROOT/config['manifest_dir']
+    if config.get('manifest_kind')=='bisindo-kaggle-v1':
+        if language!='bisindo':
+            raise ValueError('The Kaggle BISINDO manifest only supports language=bisindo')
+        lock=json.loads((directory/'split_lock.json').read_text(encoding='utf-8'))
+        tracked_path=ROOT/config.get('manifest_lock_report','reports/bisindo_kaggle_v1/split_lock.json')
+        tracked=json.loads(tracked_path.read_text(encoding='utf-8'))
+        if lock!=tracked or lock['version']!=config['data_version']:
+            raise ValueError('Kaggle manifest lock does not match the tracked BISINDO snapshot')
+        contents=(directory/'manifest.csv').read_bytes()
+        if sha(contents)!=lock['manifest_sha256']:
+            raise ValueError('Kaggle manifest changed after lock')
+        all_rows=list(csv.DictReader(io.StringIO(contents.decode('utf-8'))))
+        rows=[row for row in all_rows if row['include']=='1' and row['split']==split]
+        if not rows or any(row['language']!='bisindo' for row in rows):
+            raise ValueError(f'No valid BISINDO rows in Kaggle {split} manifest')
+        for row in rows:
+            relative=Path(row['path'])
+            if relative.is_absolute() or '..' in relative.parts or ':' in row['path']:
+                raise ValueError('Unsafe relative image path')
+        return rows,sha(contents)
     lock=json.loads((directory/'split_lock.json').read_text(encoding='utf-8'))
     tracked=json.loads((ROOT/'reports/data_preparation/split_lock.json').read_text(encoding='utf-8'))
     if lock!=tracked or lock['version']!=config['data_version']:
@@ -157,7 +177,7 @@ def main():
                     arrays=load_cache(partial,metadata,rows) if partial.exists() else init_arrays(rows,metadata)
                     start=int(arrays['processed_count'])
                     for i in range(start,len(rows)):
-                        row=rows[i];path=ROOT/'dataset'/row['path'];contents=path.read_bytes()
+                        row=rows[i];path=ROOT/'dataset'/config.get('dataset_root','')/row['path'];contents=path.read_bytes()
                         if sha(contents)!=row['sha256']:
                             raise ValueError(f'Raw image changed since manifest: {row["path"]}')
                         with Image.open(io.BytesIO(contents)) as im:

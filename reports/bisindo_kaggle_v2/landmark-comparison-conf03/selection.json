@@ -1,0 +1,418 @@
+[
+  {
+    "class": "A",
+    "status": "valid",
+    "path": "images/train/A/flip071.jpg",
+    "source_group": "A:05f625b9815436119049",
+    "paired_same_group": true,
+    "hand_count": 2
+  },
+  {
+    "class": "A",
+    "status": "no_hand",
+    "path": "images/train/A/augmented_image_1.jpg",
+    "source_group": "A:05f625b9815436119049",
+    "paired_same_group": true,
+    "hand_count": 0
+  },
+  {
+    "class": "B",
+    "status": "valid",
+    "path": "images/train/B/augmented_image_0.jpg",
+    "source_group": "B:2df3f5d828a75b54ee94",
+    "paired_same_group": true,
+    "hand_count": 1
+  },
+  {
+    "class": "B",
+    "status": "no_hand",
+    "path": "images/train/B/rotate007.jpg",
+    "source_group": "B:2df3f5d828a75b54ee94",
+    "paired_same_group": true,
+    "hand_count": 0
+  },
+  {
+    "class": "C",
+    "status": "valid",
+    "path": "images/train/C/augmented_image_16.jpg",
+    "source_group": "C:921be9ba78e514368af5",
+    "paired_same_group": false,
+    "hand_count": 1
+  },
+  {
+    "class": "C",
+    "status": "no_hand",
+    "path": "images/train/C/rotate027.jpg",
+    "source_group": "C:f595d2290c1f1c270b7a",
+    "paired_same_group": false,
+    "hand_count": 0
+  },
+  {
+    "class": "D",
+    "status": "valid",
+    "path": "images/train/D/augmented_image_49.jpg",
+    "source_group": "D:20386fa4a4798806e123",
+    "paired_same_group": false,
+    "hand_count": 2
+  },
+  {
+    "class": "D",
+    "status": "no_hand",
+    "path": null,
+    "source_group": "",
+    "paired_same_group": false,
+    "hand_count": null
+  },
+  {
+    "class": "E",
+    "status": "valid",
+    "path": "images/train/E/flip004.jpg",
+    "source_group": "E:486d8a3fd8cdafbac746",
+    "paired_same_group": false,
+    "hand_count": 1
+  },
+  {
+    "class": "E",
+    "status": "no_hand",
+    "path": "images/train/E/flip008.jpg",
+    "source_group": "E:b736bd365a83c46f6c49",
+    "paired_same_group": false,
+    "hand_count": 0
+  },
+  {
+    "class": "F",
+    "status": "valid",
+    "path": "images/train/F/rotate064.jpg",
+    "source_group": "F:f1d7b687cf4920f9d6d8",
+    "paired_same_group": true,
+    "hand_count": 1
+  },
+  {
+    "class": "F",
+    "status": "no_hand",
+    "path": "images/train/F/rotate047.jpg",
+    "source_group": "F:f1d7b687cf4920f9d6d8",
+    "paired_same_group": true,
+    "hand_count": 0
+  },
+  {
+    "class": "G",
+    "status": "valid",
+    "path": "images/train/G/augmented_image_100.jpg",
+    "source_group": "G:a9077023b9c3d5071add",
+    "paired_same_group": false,
+    "hand_count": 2
+  },
+  {
+    "class": "G",
+    "status": "no_hand",
+    "path": "images/train/G/flip110.jpg",
+    "source_group": "G:a64ad6ffefbac3da16f0",
+    "paired_same_group": false,
+    "hand_count": 0
+  },
+  {
+    "class": "H",
+    "status": "valid",
+    "path": "images/train/H/augmented_image_15.jpg",
+    "source_group": "H:c2828c2fbfd69e1ee33e",
+    "paired_same_group": true,
+    "hand_count": 1
+  },
+  {
+    "class": "H",
+    "status": "no_hand",
+    "path": "images/val/H/rotate044.jpg",
+    "source_group": "H:c2828c2fbfd69e1ee33e",
+    "paired_same_group": true,
+    "hand_count": 0
+  },
+  {
+    "class": "I",
+    "status": "valid",
+    "path": "images/train/I/augmented_image_100.jpg",
+    "source_group": "I:1c45aedadd34cb64402a",
+    "paired_same_group": true,
+    "hand_count": 1
+  },
+  {
+    "class": "I",
+    "status": "no_hand",
+    "path": "images/train/I/flip048.jpg",
+    "source_group": "I:1c45aedadd34cb64402a",
+    "paired_same_group": true,
+    "hand_count": 0
+  },
+  {
+    "class": "J",
+    "status": "valid",
+    "path": "images/train/J/IMG_20191210_180611.jpg",
+    "source_group": "J:bd4320520f95a2149147",
+    "paired_same_group": true,
+    "hand_count": 1
+  },
+  {
+    "class": "J",
+    "status": "no_hand",
+    "path": "images/train/J/augmented_image_11.jpg",
+    "source_group": "J:bd4320520f95a2149147",
+    "paired_same_group": true,
+    "hand_count": 0
+  },
+  {
+    "class": "K",
+    "status": "valid",
+    "path": "images/train/K/augmented_image_45.jpg",
+    "source_group": "K:cb4620b5ddd23d7a37b5",
+    "paired_same_group": true,
+    "hand_count": 2
+  },
+  {
+    "class": "K",
+    "status": "no_hand",
+    "path": "images/train/K/rotate026.jpg",
+    "source_group": "K:cb4620b5ddd23d7a37b5",
+    "paired_same_group": true,
+    "hand_count": 0
+  },
+  {
+    "class": "L",
+    "status": "valid",
+    "path": "images/train/L/augmented_image_16.jpg",
+    "source_group": "L:1e25a9293debb818eec2",
+    "paired_same_group": false,
+    "hand_count": 1
+  },
+  {
+    "class": "L",
+    "status": "no_hand",
+    "path": "images/train/L/rotate005.jpg",
+    "source_group": "L:d4e86c579b9144a68850",
+    "paired_same_group": false,
+    "hand_count": 0
+  },
+  {
+    "class": "M",
+    "status": "valid",
+    "path": "images/train/M/augmented_image_51.jpg",
+    "source_group": "M:6e5615f7b2a0acb5a692",
+    "paired_same_group": false,
+    "hand_count": 2
+  },
+  {
+    "class": "M",
+    "status": "no_hand",
+    "path": null,
+    "source_group": "",
+    "paired_same_group": false,
+    "hand_count": null
+  },
+  {
+    "class": "N",
+    "status": "valid",
+    "path": "images/train/N/augmented_image_18.jpg",
+    "source_group": "N:fade2f2008c6eaf66019",
+    "paired_same_group": false,
+    "hand_count": 1
+  },
+  {
+    "class": "N",
+    "status": "no_hand",
+    "path": null,
+    "source_group": "",
+    "paired_same_group": false,
+    "hand_count": null
+  },
+  {
+    "class": "O",
+    "status": "valid",
+    "path": "images/train/O/augmented_image_17.jpg",
+    "source_group": "O:3084b3f9ed40975fcdb4",
+    "paired_same_group": true,
+    "hand_count": 1
+  },
+  {
+    "class": "O",
+    "status": "no_hand",
+    "path": "images/train/O/flip050.jpg",
+    "source_group": "O:3084b3f9ed40975fcdb4",
+    "paired_same_group": true,
+    "hand_count": 0
+  },
+  {
+    "class": "P",
+    "status": "valid",
+    "path": "images/train/P/flip016.jpg",
+    "source_group": "P:93f788beb024dcbac0cc",
+    "paired_same_group": false,
+    "hand_count": 1
+  },
+  {
+    "class": "P",
+    "status": "no_hand",
+    "path": null,
+    "source_group": "",
+    "paired_same_group": false,
+    "hand_count": null
+  },
+  {
+    "class": "Q",
+    "status": "valid",
+    "path": "images/train/Q/augmented_image_0.jpg",
+    "source_group": "Q:1532f5d55fd5c4a3d5cd",
+    "paired_same_group": false,
+    "hand_count": 2
+  },
+  {
+    "class": "Q",
+    "status": "no_hand",
+    "path": "images/train/Q/augmented_image_88.jpg",
+    "source_group": "Q:9594ce6710f1e282f9df",
+    "paired_same_group": false,
+    "hand_count": 0
+  },
+  {
+    "class": "R",
+    "status": "valid",
+    "path": "images/train/R/augmented_image_22.jpg",
+    "source_group": "R:c2919b2d1286647a437e",
+    "paired_same_group": false,
+    "hand_count": 1
+  },
+  {
+    "class": "R",
+    "status": "no_hand",
+    "path": null,
+    "source_group": "",
+    "paired_same_group": false,
+    "hand_count": null
+  },
+  {
+    "class": "S",
+    "status": "valid",
+    "path": "images/train/S/augmented_image_28.jpg",
+    "source_group": "S:f67de277ae1b3d47b46f",
+    "paired_same_group": false,
+    "hand_count": 2
+  },
+  {
+    "class": "S",
+    "status": "no_hand",
+    "path": "images/val/S/rotate017.jpg",
+    "source_group": "S:a9cc69e43ef26000f869",
+    "paired_same_group": false,
+    "hand_count": 0
+  },
+  {
+    "class": "T",
+    "status": "valid",
+    "path": "images/train/T/augmented_image_12.jpg",
+    "source_group": "T:8e70bd95e46808522dfe",
+    "paired_same_group": true,
+    "hand_count": 2
+  },
+  {
+    "class": "T",
+    "status": "no_hand",
+    "path": "images/train/T/rotate095.jpg",
+    "source_group": "T:8e70bd95e46808522dfe",
+    "paired_same_group": true,
+    "hand_count": 0
+  },
+  {
+    "class": "U",
+    "status": "valid",
+    "path": "images/train/U/augmented_image_26.jpg",
+    "source_group": "U:cb4eb0610f73ee48c6c9",
+    "paired_same_group": false,
+    "hand_count": 1
+  },
+  {
+    "class": "U",
+    "status": "no_hand",
+    "path": "images/val/U/rotate051.jpg",
+    "source_group": "U:e78645c81ea131dc84ce",
+    "paired_same_group": false,
+    "hand_count": 0
+  },
+  {
+    "class": "V",
+    "status": "valid",
+    "path": "images/train/V/augmented_image_13.jpg",
+    "source_group": "V:9305c27dd726b1ce0c64",
+    "paired_same_group": false,
+    "hand_count": 1
+  },
+  {
+    "class": "V",
+    "status": "no_hand",
+    "path": "images/train/V/rotate039.jpg",
+    "source_group": "V:13204c36278cefe21695",
+    "paired_same_group": false,
+    "hand_count": 0
+  },
+  {
+    "class": "W",
+    "status": "valid",
+    "path": "images/train/W/augmented_image_1.jpg",
+    "source_group": "W:5321b0071bc57818c082",
+    "paired_same_group": true,
+    "hand_count": 1
+  },
+  {
+    "class": "W",
+    "status": "no_hand",
+    "path": "images/val/W/rotate062.jpg",
+    "source_group": "W:5321b0071bc57818c082",
+    "paired_same_group": true,
+    "hand_count": 0
+  },
+  {
+    "class": "X",
+    "status": "valid",
+    "path": "images/train/X/augmented_image_64.jpg",
+    "source_group": "X:411765d453dca1472dc5",
+    "paired_same_group": true,
+    "hand_count": 2
+  },
+  {
+    "class": "X",
+    "status": "no_hand",
+    "path": "images/val/X/rotate002.jpg",
+    "source_group": "X:411765d453dca1472dc5",
+    "paired_same_group": true,
+    "hand_count": 0
+  },
+  {
+    "class": "Y",
+    "status": "valid",
+    "path": "images/train/Y/augmented_image_21.jpg",
+    "source_group": "Y:70169f16dd3eb589f232",
+    "paired_same_group": true,
+    "hand_count": 1
+  },
+  {
+    "class": "Y",
+    "status": "no_hand",
+    "path": "images/train/Y/flip023.jpg",
+    "source_group": "Y:70169f16dd3eb589f232",
+    "paired_same_group": true,
+    "hand_count": 0
+  },
+  {
+    "class": "Z",
+    "status": "valid",
+    "path": "images/train/Z/augmented_image_17.jpg",
+    "source_group": "Z:c6094dd8e65c9074ea98",
+    "paired_same_group": true,
+    "hand_count": 1
+  },
+  {
+    "class": "Z",
+    "status": "no_hand",
+    "path": "images/train/Z/rotate092.jpg",
+    "source_group": "Z:c6094dd8e65c9074ea98",
+    "paired_same_group": true,
+    "hand_count": 0
+  }
+]

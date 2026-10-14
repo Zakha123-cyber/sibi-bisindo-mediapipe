@@ -1,0 +1,6 @@
+# Install PyTorch/TorchVision suitable for the machine separately.
+# Google Colab already provides both; avoid replacing its CUDA-enabled build.
+numpy==1.26.4
+Pillow==11.3.0
+scikit-learn==1.5.2
+opencv-contrib-python==4.11.0.86

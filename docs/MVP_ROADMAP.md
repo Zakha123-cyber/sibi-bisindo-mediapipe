@@ -84,6 +84,8 @@ Hasil Tahap 1: [laporan data](../reports/data_preparation/README.md). Hasil Taha
 
 ### Tahap 3 — Baseline klasifikasi
 
+Implementasi eksperimen siap dijalankan melalui [panduan training](TRAINING_BASELINES.md). Skrip menampilkan metrik MLP per epoch, menyimpan checkpoint/log, membandingkan SVM, dan tidak membaca test saat training. Checklist hasil di bawah tetap terbuka sampai training dijalankan dan laporan diperiksa.
+
 - [ ] Latih dan bandingkan SVM serta MLP kecil untuk tiap bahasa yang siap.
 - [ ] Fit scaler dan transformasi yang dipelajari hanya pada train; pilih model dan parameter menggunakan validation.
 - [ ] Laporkan macro-F1, precision/recall per kelas, confusion matrix, cakupan ekstraksi, serta latensi.
