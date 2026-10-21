@@ -36,7 +36,7 @@ Environment service terpisah sudah dibuat pada `.venv-service`. Dari direktori p
 & '.\.venv-service\Scripts\python.exe' scripts/run_local_demo.py
 ```
 
-Buka `http://localhost:8000` atau `http://localhost:8000/demo/webcam.html`. Pilih SIBI/BISINDO, klik **Mulai kamera**, lalu izinkan browser menggunakan kamera. Halaman menampilkan preview, rangka landmark, huruf, skor mentah model, jumlah tangan, waktu proses, dan frame per detik. Tombol **Berhenti** mematikan kamera; `Ctrl+C` menghentikan server. API docs tersedia pada `http://localhost:8000/docs`.
+Buka `http://localhost:8000` atau `http://localhost:8000/demo/webcam.html`. Pilih SIBI/BISINDO, klik **Mulai kamera**, lalu izinkan browser menggunakan kamera. Halaman menampilkan preview, rangka landmark, huruf, skor mentah model, jumlah tangan, waktu proses API, jeda frame dari pengambilan sampai respons, dan frame per detik. **Preview sinkron** menampilkan frame yang sama dengan landmark sehingga rangka mengikuti tangan pada gambar; saat opsi dimatikan, video kamera bergerak terus tetapi landmark dapat tertinggal. Tombol **Berhenti** mematikan kamera; `Ctrl+C` menghentikan server. API docs tersedia pada `http://localhost:8000/docs`.
 
 Jika port 8000 sedang dipakai, tentukan port lain, misalnya:
 

@@ -3,6 +3,7 @@ const $ = id => document.getElementById(id);
 if (location.pathname.startsWith('/demo/')) $('api').value = location.origin;
 let session = 0, stream = null, socket = null, timer = null, watchdog = null;
 let active = false, pending = false, lastLandmarks = [], responses = [];
+let capturedAt = 0, hasProcessedFrame = false;
 
 function badge(text, state = '') { $('connection').textContent = text; $('connection').className = `badge ${state}`; }
 function status(text, error = false) { $('status').textContent = text; $('status').classList.toggle('error', error); }
@@ -10,7 +11,7 @@ function clearOverlay() { const c = $('overlay'); c.getContext('2d').clearRect(0
 function clearPrediction(text = 'Menunggu pose tangan') {
   $('letter').textContent = '—'; $('prediction-state').textContent = text; $('score').textContent = '—';
   $('score-fill').style.width = '0%'; $('score-meter').setAttribute('aria-valuenow', '0');
-  $('hands').textContent = '—'; $('latency').textContent = '—'; $('fps').textContent = '—';
+  $('hands').textContent = '—'; $('latency').textContent = '—'; $('frame-age').textContent = '—'; $('fps').textContent = '—';
   lastLandmarks = []; clearOverlay();
 }
 function resetControls() {
@@ -22,6 +23,7 @@ function stop(message = 'Kamera dihentikan.', error = false) {
   if (socket) { socket.onclose = null; socket.onerror = null; socket.close(); socket = null; }
   if (stream) { stream.getTracks().forEach(track => { track.onended = null; track.stop(); }); stream = null; }
   $('video').srcObject = null; $('placeholder').hidden = false; $('camera-state').textContent = 'Belum aktif';
+  hasProcessedFrame = false; $('stage').classList.remove('synced');
   responses = []; clearPrediction('Kamera berhenti'); resetControls(); status(message, error);
   badge(error ? 'Koneksi terhenti' : 'Kamera berhenti', error ? 'error' : '');
 }
@@ -68,12 +70,13 @@ function drawLandmarks() {
     for (const point of points) { ctx.beginPath(); ctx.arc(...point, 3, 0, Math.PI * 2); ctx.fill(); }
   });
 }
-function schedule(token, delay = 125) { clearTimeout(timer); timer = setTimeout(() => sendFrame(token), delay); }
+function schedule(token, delay = 0) { clearTimeout(timer); timer = setTimeout(() => sendFrame(token), delay); }
 function sendFrame(token) {
   if (token !== session || !active || pending || !socket || socket.readyState !== WebSocket.OPEN) return;
   const video = $('video'), canvas = $('capture');
   if (!video.videoWidth) { schedule(token, 100); return; }
   canvas.width = Math.min(640, video.videoWidth); canvas.height = Math.round(video.videoHeight * canvas.width / video.videoWidth);
+  capturedAt = performance.now();
   canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height); // Send original pixels; mirror preview only.
   pending = true;
   canvas.toBlob(blob => {
@@ -83,21 +86,30 @@ function sendFrame(token) {
     watchdog = setTimeout(() => { if (token === session) fail('Respons frame terlalu lama. Periksa terminal API.'); }, 15000);
   }, 'image/jpeg', .8);
 }
-function showResult(result) {
+function showResult(result, frameAge) {
   $('letter').textContent = result.label || '—';
   $('prediction-state').textContent = result.label ? `Pose huruf ${result.label}` : 'Belum ada huruf';
   $('score').textContent = result.score == null ? '—' : result.score.toFixed(3);
   const score = Math.max(0, Math.min(1, result.score || 0));
   $('score-fill').style.width = `${score * 100}%`; $('score-meter').setAttribute('aria-valuenow', String(score));
   $('hands').textContent = String(result.hand_count); $('latency').textContent = `${Math.round(result.timings_ms.total)} ms`;
+  $('frame-age').textContent = `${Math.round(frameAge)} ms`;
   responses.push(performance.now()); responses = responses.slice(-12);
   $('fps').textContent = responses.length < 2 ? '—' : ((responses.length - 1) * 1000 / (responses.at(-1) - responses[0])).toFixed(1);
   const messages = { no_hand: 'Belum ada tangan terlihat. Arahkan tangan ke kamera.', unexpected_extra_hand: 'SIBI memakai satu tangan. Jauhkan tangan kedua.', invalid_geometry: 'Landmark belum valid. Perjelas posisi tangan.' };
   status(result.label ? 'Tahan pose sebentar dan amati hasil hurufnya.' : (messages[result.detection_status] || 'Pose belum dapat diprediksi.'));
   lastLandmarks = result.landmarks || []; drawLandmarks();
 }
+function showProcessedFrame() {
+  const source = $('capture'), target = $('processed-frame');
+  target.width = source.width; target.height = source.height;
+  target.getContext('2d').drawImage(source, 0, 0);
+  hasProcessedFrame = true;
+  $('stage').classList.toggle('synced', $('sync-preview').checked);
+}
 async function start() {
-  const token = ++session; active = true; resetControls(); clearPrediction(); status('Memeriksa API dan menyiapkan kamera…');
+  const token = ++session; active = true; hasProcessedFrame = false; $('stage').classList.remove('synced');
+  resetControls(); clearPrediction(); status('Memeriksa API dan menyiapkan kamera…');
   try {
     await checkApi(); if (token !== session) return;
     if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) throw new Error('Buka halaman melalui localhost atau HTTPS agar kamera dapat diakses.');
@@ -121,7 +133,8 @@ async function start() {
           clearPrediction('Menunggu API'); status(result.detail, true); schedule(token, 1000); return;
         }
         if (result.type !== 'prediction') throw new Error('Format respons API tidak dikenali.');
-        showResult(result); schedule(token);
+        const frameAge = performance.now() - capturedAt;
+        showProcessedFrame(); showResult(result, frameAge); schedule(token);
       } catch (error) { fail(friendlyError(error)); }
     };
     connection.onerror = () => { if (token === session) fail('WebSocket gagal. Periksa alamat API dan origin halaman yang diizinkan.'); };
@@ -139,5 +152,6 @@ $('check-api').onclick = async () => { $('check-api').disabled = true; try { awa
 $('language').onchange = languageHelp;
 $('mirror').onchange = () => $('stage').classList.toggle('mirrored', $('mirror').checked);
 $('landmarks').onchange = drawLandmarks;
+$('sync-preview').onchange = () => $('stage').classList.toggle('synced', active && hasProcessedFrame && $('sync-preview').checked);
 window.addEventListener('beforeunload', () => stop());
 languageHelp();

@@ -81,7 +81,7 @@ URL: `wss://ai.example.com/v1/ws/bisindo`. Kirim Blob/ArrayBuffer JPEG/PNG; tung
 
 Respons sukses sama dengan respons HTTP dengan tambahan `"type":"prediction"`. Error berupa `{"type":"error","code":"503","detail":"..."}` atau `binary_frame_required`/`empty_frame`. Frame terlalu besar menutup koneksi dengan kode 1009; origin atau bahasa tidak sah ditolak dengan kode 1008. Koneksi tanpa frame selama 60 detik ditutup.
 
-Contoh lengkap ada pada [examples/webcam.html](../examples/webcam.html). Untuk uji lokal, jalankan `& '.\.venv-service\Scripts\python.exe' scripts/run_local_demo.py` lalu buka `http://localhost:8000`. Browser memerlukan localhost atau HTTPS untuk `getUserMedia`. Halaman memakai satu frame aktif; opsi cermin hanya membalik preview, sedangkan piksel yang dikirim ke API tetap sesuai kamera. Halaman tidak merekam atau menyimpan frame.
+Contoh lengkap ada pada [examples/webcam.html](../examples/webcam.html). Untuk uji lokal, jalankan `& '.\.venv-service\Scripts\python.exe' scripts/run_local_demo.py` lalu buka `http://localhost:8000`. Browser memerlukan localhost atau HTTPS untuk `getUserMedia`. Halaman memakai satu frame aktif; respons langsung memicu pengiriman frame terbaru. Opsi **Preview sinkron** menampilkan frame yang menghasilkan landmark agar overlay tidak tertinggal dari gambar, dengan kecepatan tampilan mengikuti inferensi. Opsi cermin hanya membalik preview, sedangkan piksel yang dikirim ke API tetap sesuai kamera. Halaman tidak merekam atau menyimpan frame.
 
 ## Error HTTP dan kapasitas
 
