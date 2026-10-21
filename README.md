@@ -2,6 +2,8 @@
 
 FastAPI untuk dua checkpoint terpilih tersedia: [kontrak developer web](docs/API_CONTRACT.md), [deployment Docker + GitHub Actions](docs/DEPLOYMENT.md), dan [pemilahan file GitHub](docs/GITHUB_PUBLISH_CHECKLIST.md). Bundle model disimpan terpisah dari Git di `models/selected-sibi-bisindo-v1/`. API sudah diperiksa lokal; build Docker dan deployment VPS masih perlu dijalankan pada lingkungan target.
 
+Untuk mencoba deteksi webcam di komputer ini, jalankan `& '.\.venv-service\Scripts\python.exe' scripts/run_local_demo.py` dari direktori proyek, lalu buka `http://localhost:8000`. Pilih SIBI atau BISINDO dan klik **Mulai kamera**. [Petunjuk lokal lengkap](docs/DEPLOYMENT.md#menjalankan-lokal).
+
 MVP yang disepakati: mengenali pose huruf statis dari webcam, dengan mode SIBI/BISINDO dipilih pengguna. Dua model koordinat MediaPipe terpilih kini memiliki service FastAPI dan halaman HTML untuk uji integrasi; UI produk menjadi tanggung jawab aplikasi web. Latensi realtime, terutama fallback BISINDO, masih perlu diperhatikan saat deployment.
 
 **Acuan aktif:** [reset model koordinat](docs/COORDINATE_RESET_PLAN.md). SIBI 26 kelas memakai 24 huruf dataset SIBI dan pose statis J/Z sumber ASL. Training CNN1D/MLP, lalu SVM pada embedding, memakai cache landmark tanpa ekstraksi ulang atau koleksi webcam tambahan. Jalankan `python scripts/train_coordinates.py --language sibi` atau gunakan [notebook Colab](notebooks/02_coordinate_reset_colab.ipynb). Pilot webcam dan eksperimen sebelumnya menjadi arsip pembanding.
@@ -79,7 +81,7 @@ Gunakan [skrip diagnostik detektor webcam](docs/WEBCAM_DETECTOR_DIAGNOSTIC.md) u
 
 Untuk BISINDO, baseline yang mengklasifikasikan gambar penuh tanpa MediaPipe dijelaskan di [IMAGE_CLASSIFIER_BASELINE.md](docs/IMAGE_CLASSIFIER_BASELINE.md). Evaluasi test final dijalankan sekali; laporan lokal ada di `artifacts/bisindo-image-run-01/test_metrics.json`. Preview model dan collector webcam berlabel tersedia melalui [panduan demo webcam](docs/WEBCAM_IMAGE_CLASSIFIER.md), `scripts/webcam_image_classifier.py`, dan `scripts/collect_bisindo_webcam_samples.py`. Hasil training dan laporan rinci tetap lokal di `artifacts/`.
 
-Model SIBI terpilih (`svm_linear_c1`, 24 kelas) dapat diuji melalui webcam memakai [panduan uji webcam SIBI](docs/WEBCAM_SIBI_CLASSIFIER.md) dan `scripts/webcam_sibi_classifier.py`. Belum ada endpoint API atau UI inferensi yang dibuat; hasil webcam menjadi prasyarat langkah integrasi berikutnya.
+Eksperimen SIBI lama (`svm_linear_c1`, 24 kelas) dapat diuji melalui [panduan uji webcam SIBI](docs/WEBCAM_SIBI_CLASSIFIER.md) dan `scripts/webcam_sibi_classifier.py`. Service dan halaman uji saat ini memakai checkpoint koordinat terpilih yang dijelaskan di bagian awal dokumen.
 
 Eksperimen baru dengan dataset landmark NumPy sumber ASL memakai 63 fitur dan 24 kelas kandidat, dengan kesesuaian pose SIBI belum diverifikasi. Panduan audit, persiapan split, serta training SVM/MLP per epoch ada di [NPY_LANDMARK_EXPERIMENT.md](docs/NPY_LANDMARK_EXPERIMENT.md). Artefaknya terpisah dari model SIBI 132 fitur sebelumnya.
 

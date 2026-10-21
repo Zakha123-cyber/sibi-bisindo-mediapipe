@@ -30,19 +30,21 @@ Tidak menimpa output yang ada. Konfigurasi model sumber ada di `configs/service_
 
 ## Menjalankan lokal
 
-Environment service terpisah sudah dibuat pada `.venv-service`; environment training tetap tersedia.
+Environment service terpisah sudah dibuat pada `.venv-service`. Dari direktori proyek, jalankan API dan halaman uji dalam satu terminal:
 
 ```powershell
-& '.\.venv-service\Scripts\python.exe' -m uvicorn sibi_bisindo.service.app:create_app --factory --app-dir src --host 127.0.0.1 --port 8000 --workers 1 --ws-max-size 2000000 --ws-max-queue 1
+& '.\.venv-service\Scripts\python.exe' scripts/run_local_demo.py
 ```
 
-Pada terminal kedua, untuk halaman uji browser:
+Buka `http://localhost:8000` atau `http://localhost:8000/demo/webcam.html`. Pilih SIBI/BISINDO, klik **Mulai kamera**, lalu izinkan browser menggunakan kamera. Halaman menampilkan preview, rangka landmark, huruf, skor mentah model, jumlah tangan, waktu proses, dan frame per detik. Tombol **Berhenti** mematikan kamera; `Ctrl+C` menghentikan server. API docs tersedia pada `http://localhost:8000/docs`.
+
+Jika port 8000 sedang dipakai, tentukan port lain, misalnya:
 
 ```powershell
-& 'C:\Program Files\Python312\python.exe' -m http.server 5173 --directory examples
+& '.\.venv-service\Scripts\python.exe' scripts/run_local_demo.py --port 8001
 ```
 
-Buka `http://localhost:5173/webcam.html`; dokumentasi API pada `http://localhost:8000/docs`. Origin `http://localhost:5173` dan `http://localhost:8000` diizinkan secara default. Bila memakai alamat lain, atur `$env:ALLOWED_ORIGINS` sebelum menjalankan service. `.env.example` merupakan contoh pengaturan; factory membaca environment proses, bukan otomatis membaca file `.env` lokal.
+Launcher lokal melayani halaman dari proses FastAPI yang sama dan mengizinkan origin localhost pada port yang dipilih. Bila halaman web lain perlu mengakses API, atur `$env:ALLOWED_ORIGINS` sebelum menjalankan service. `.env.example` merupakan contoh pengaturan; factory membaca environment proses, bukan otomatis membaca file `.env` lokal.
 
 Instalasi dari awal di mesin lain: Python 3.12, buat virtual environment, pasang PyTorch CPU 2.6.0 dari indeks resmi CPU, lalu `pip install -r requirements-service.txt`. Dependency MediaPipe harus sesuai pin karena model demo sebelumnya sudah mengunci versi dan hash model bawaannya.
 
