@@ -1,0 +1,12 @@
+-r requirements-features.txt
+-r requirements-api.txt
+joblib==1.4.2
+# Keep MediaPipe's numerical dependencies compatible with the NumPy 1.x model environment.
+jax==0.7.1
+jaxlib==0.7.1
+ml-dtypes==0.5.4
+scipy==1.14.1
+matplotlib==3.10.0
+flatbuffers==25.9.23
+sounddevice==0.5.3
+# CPU PyTorch 2.6.0 is installed separately from the official CPU wheel index.

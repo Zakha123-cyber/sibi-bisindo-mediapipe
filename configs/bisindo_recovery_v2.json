@@ -1,0 +1,10 @@
+{
+  "version": "bisindo-recovery-clean-v2",
+  "recovery_config": "configs/bisindo_recovery_v1.json",
+  "proposal_cache": "data/features/bisindo-recovery-v1",
+  "output_dir": "data/features/bisindo-recovery-clean-v2",
+  "quality": {
+    "minimum_corresponding_distance_palms": 0.85,
+    "minimum_point_set_distance_palms": 0.55
+  }
+}

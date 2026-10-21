@@ -1,0 +1,18 @@
+{
+  "version": "bisindo-transfer-recovery-v2",
+  "required_runtime_policy": "bisindo-runtime-recovery-v2",
+  "seed": 42,
+  "source_run": "artifacts/coordinate-reset-v1/sibi_20261020_130607_889055",
+  "features_dir": "data/features/coordinate-bisindo-recovery-v2/bisindo",
+  "head_epochs": 10,
+  "finetune_epochs": 60,
+  "patience": 12,
+  "batch_size": 64,
+  "head_learning_rate": 0.001,
+  "encoder_learning_rate": 0.0001,
+  "finetune_head_learning_rate": 0.0003,
+  "weight_decay": 0.0001,
+  "rotation_degrees": 12.0,
+  "coordinate_noise_std": 0.008,
+  "balanced_sampling": true
+}

@@ -1,0 +1,22 @@
+{
+  "version": "coordinate-reset-v1",
+  "seed": 42,
+  "output_dir": "data/features/coordinate-reset-v1",
+  "feature_version": "two-hand-coordinates-v1",
+  "sibi_cache": "data/features/landmarks-v1-final",
+  "bisindo_cache": "data/features/landmarks-bisindo-kaggle-v2-conf03",
+  "asl_root": "dataset/ASL Dataset/landmarks",
+  "asl_labels": ["J", "Z"],
+  "asl_train_limit_per_class": 42,
+  "asl_train_fraction": 0.7,
+  "asl_val_fraction": 0.15,
+  "asl_gap": 10,
+  "asl_aspect_ratio": 1.0,
+  "epochs": 100,
+  "patience": 15,
+  "batch_size": 64,
+  "learning_rate": 0.001,
+  "weight_decay": 0.0001,
+  "rotation_degrees": 12.0,
+  "coordinate_noise_std": 0.008
+}

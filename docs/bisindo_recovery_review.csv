@@ -1,0 +1,2 @@
+split,path,sha256,decision,reviewer,reviewed_on,reason
+val,images/val/O/IMG_20230606_092037.jpg,043af6dcc2a6a996797ab2a2c46531b0f273cfa89203cb6c09c0adc5fa30d2df,revert_to_baseline,assistant_visual_technical_review,2026-10-21,Two recovered skeletons remain on the same visible O hand after automatic duplicate retry; restore original single-hand baseline

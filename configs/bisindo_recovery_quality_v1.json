@@ -1,0 +1,7 @@
+{
+  "version": "bisindo-recovery-filtered-v1",
+  "recovery_config": "configs/bisindo_recovery_v1.json",
+  "proposal_cache": "data/features/bisindo-recovery-v1",
+  "output_dir": "data/features/bisindo-recovery-filtered-v1",
+  "minimum_mean_point_separation_palms": 0.85
+}

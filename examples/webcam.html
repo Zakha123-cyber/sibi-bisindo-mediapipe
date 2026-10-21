@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Uji API SIBI / BISINDO</title>
+<style>
+body{font:16px system-ui;max-width:760px;margin:32px auto;padding:0 16px;background:#f5f7fa;color:#172b40}
+label{display:block;margin:16px 0}input{width:min(90%,440px);padding:8px}button,select{padding:10px;margin-right:8px}
+video{width:100%;max-height:480px;background:#182b40;transform:scaleX(-1);border-radius:12px;margin-top:20px}
+output{display:block;font-size:40px;font-weight:bold;margin:16px 0}#status{overflow-wrap:anywhere}
+</style>
+<h1>Uji alfabet SIBI / BISINDO</h1>
+<label>Alamat API <input id="api" value="http://localhost:8000" aria-label="Alamat API"></label>
+<label>Bahasa <select id="language"><option value="sibi">SIBI</option><option value="bisindo">BISINDO</option></select></label>
+<button id="start">Mulai kamera</button><button id="stop" disabled>Berhenti</button>
+<video id="video" autoplay muted playsinline></video><canvas id="canvas" hidden></canvas>
+<output id="letter">—</output><p id="status">Siap. Gunakan pose huruf statis; J/Z SIBI belum mengenali gerakan.</p>
+<script>
+const $=id=>document.getElementById(id);
+let stream=null,socket=null,pending=false,timer=null,running=false;
+function stop(){running=false;clearTimeout(timer);if(socket){socket.close();socket=null}if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}pending=false;$('video').srcObject=null;$('start').disabled=false;$('stop').disabled=true;$('api').disabled=false;$('language').disabled=false}
+function fail(message){stop();$('status').textContent=message}
+async function sendFrame(){
+  if(!running||pending||!socket||socket.readyState!==WebSocket.OPEN)return;
+  const video=$('video'),canvas=$('canvas');
+  if(!video.videoWidth){timer=setTimeout(sendFrame,100);return}
+  canvas.width=Math.min(640,video.videoWidth);canvas.height=Math.round(video.videoHeight*canvas.width/video.videoWidth);
+  canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height); // CSS mirror does not alter submitted pixels.
+  pending=true;
+  canvas.toBlob(blob=>{if(!running||!socket||socket.readyState!==WebSocket.OPEN){pending=false;return}if(!blob){fail('Tidak berhasil membuat frame');return}socket.send(blob)},'image/jpeg',.8);
+}
+$('stop').onclick=()=>{stop();$('status').textContent='Kamera dihentikan.'};
+$('start').onclick=async()=>{
+  try{
+    $('start').disabled=true;
+    const base=new URL($('api').value);base.protocol=base.protocol==='https:'?'wss:':'ws:';base.pathname='/v1/ws/'+$('language').value;base.search='';base.hash='';
+    stream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:640},height:{ideal:480}},audio:false});
+    $('video').srcObject=stream;await $('video').play();
+    socket=new WebSocket(base);running=true;$('stop').disabled=false;$('api').disabled=true;$('language').disabled=true;
+    socket.onopen=()=>{pending=false;$('status').textContent='Terhubung';sendFrame()};
+    socket.onmessage=event=>{
+      if(!running)return;pending=false;
+      const result=JSON.parse(event.data);
+      if(result.type==='error'){$('status').textContent=result.detail;timer=setTimeout(sendFrame,1000);return}
+      $('letter').textContent=result.label||'—';
+      $('status').textContent=result.label?`Skor ${result.score.toFixed(3)} · ${result.hand_count} tangan · ${result.timings_ms.total} ms`:`Belum ada prediksi: ${result.detection_status}`;
+      timer=setTimeout(sendFrame,125); // Wait for the previous response; never queue camera frames.
+    };
+    socket.onerror=()=>fail('Koneksi gagal. Periksa alamat API, HTTPS, dan origin frontend yang diizinkan.');
+    socket.onclose=()=>{if(running)fail('Koneksi ditutup; klik Mulai untuk menghubungkan kembali.')};
+  }catch(error){fail(error.message)}
+};
+window.addEventListener('beforeunload',stop);
+</script>
+</html>

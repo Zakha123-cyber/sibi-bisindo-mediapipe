@@ -1,0 +1,25 @@
+{
+  "version": "bisindo-recovery-v1",
+  "base_config": "configs/landmarks_bisindo_kaggle_v2_conf03.json",
+  "base_cache": "data/features/landmarks-bisindo-kaggle-v2-conf03",
+  "output_dir": "data/features/bisindo-recovery-v1",
+  "recover_one_hand": true,
+  "views": [
+    {"name": "rotate90", "angle": 90},
+    {"name": "rotate270", "angle": 270},
+    {"name": "center85", "roi": [0.075, 0.075, 0.925, 0.925]},
+    {"name": "rotate180", "angle": 180},
+    {"name": "left72", "roi": [0, 0, 0.72, 1]},
+    {"name": "right72", "roi": [0.28, 0, 1, 1]},
+    {"name": "top72", "roi": [0, 0, 1, 0.72]},
+    {"name": "bottom72", "roi": [0, 0.28, 1, 1]},
+    {"name": "rotate45", "angle": 45},
+    {"name": "rotate_minus45", "angle": -45},
+    {"name": "clahe", "clahe": true},
+    {"name": "upscale150", "scale": 1.5}
+  ],
+  "minimum_wrist_separation_palms": 0.3,
+  "baseline_anchor_rms_palms": 1.2,
+  "maximum_landmark_outside_margin": 0.1,
+  "checkpoint_every": 100
+}

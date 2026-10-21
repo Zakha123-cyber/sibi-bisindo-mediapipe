@@ -1,8 +1,12 @@
 # Service AI alfabet SIBI dan BISINDO
 
-MVP yang disepakati: mengenali pose huruf statis dari webcam secara realtime, dengan mode SIBI/BISINDO dipilih pengguna. Audit, manifest, ekstraksi landmark, dan training baseline gambar BISINDO sudah tersedia. Checkpoint BISINDO sudah dievaluasi satu kali pada test; demo webcam lokal menjadi langkah integrasi berikutnya. Model SIBI dan service FastAPI belum terintegrasi.
+FastAPI untuk dua checkpoint terpilih tersedia: [kontrak developer web](docs/API_CONTRACT.md), [deployment Docker + GitHub Actions](docs/DEPLOYMENT.md), dan [pemilahan file GitHub](docs/GITHUB_PUBLISH_CHECKLIST.md). Bundle model disimpan terpisah dari Git di `models/selected-sibi-bisindo-v1/`. API sudah diperiksa lokal; build Docker dan deployment VPS masih perlu dijalankan pada lingkungan target.
 
-**Acuan pekerjaan:** [roadmap MVP dan kriteria selesai](docs/MVP_ROADMAP.md). Langkah berikutnya adalah menjalankan baseline SVM/MLP sambil menjaga batas metadata yang belum tersedia.
+MVP yang disepakati: mengenali pose huruf statis dari webcam, dengan mode SIBI/BISINDO dipilih pengguna. Dua model koordinat MediaPipe terpilih kini memiliki service FastAPI dan halaman HTML untuk uji integrasi; UI produk menjadi tanggung jawab aplikasi web. Latensi realtime, terutama fallback BISINDO, masih perlu diperhatikan saat deployment.
+
+**Acuan aktif:** [reset model koordinat](docs/COORDINATE_RESET_PLAN.md). SIBI 26 kelas memakai 24 huruf dataset SIBI dan pose statis J/Z sumber ASL. Training CNN1D/MLP, lalu SVM pada embedding, memakai cache landmark tanpa ekstraksi ulang atau koleksi webcam tambahan. Jalankan `python scripts/train_coordinates.py --language sibi` atau gunakan [notebook Colab](notebooks/02_coordinate_reset_colab.ipynb). Pilot webcam dan eksperimen sebelumnya menjadi arsip pembanding.
+
+Langkah terbaru: setelah perbandingan webcam, pengguna menilai model BISINDO recovery v2 bagus secara umum, dengan kendala D/F/P terutama D. Percobaan webcam belum memiliki rekaman atau metrik tersimpan. Validation epoch 69 (system accuracy 91,21%, macro-F1 92,62%) belum menjelaskan kegagalan D pada webcam. [Review dan tindak lanjut](docs/BISINDO_RECOVERY_TRAINING_RUN01.md) mencatat perbedaannya. Panduan data dan training ada di [recovery v2](docs/BISINDO_RECOVERY_TRAINING_V2.md).
 
 Lihat [hasil dan keputusan audit](reports/dataset_audit/FINDINGS.md) atau buka [notebook audit](notebooks/01_dataset_audit.ipynb). Ringkasan kecil disimpan di Git; inventory lengkap, daftar duplikasi, serta contoh gambar di `reports/dataset_audit/` dibuat ulang secara lokal dengan skrip audit.
 
@@ -74,3 +78,13 @@ Manifest rinci dan lock BISINDO Kaggle v2 berada di `data/manifests/bisindo-kagg
 Gunakan [skrip diagnostik detektor webcam](docs/WEBCAM_DETECTOR_DIAGNOSTIC.md) untuk memeriksa landmark, jumlah tangan, status, dan FPS pada kamera langsung. Skrip tidak menyimpan frame atau video; ringkasan sesi lokal tersimpan di `data/webcam_diagnostics/`.
 
 Untuk BISINDO, baseline yang mengklasifikasikan gambar penuh tanpa MediaPipe dijelaskan di [IMAGE_CLASSIFIER_BASELINE.md](docs/IMAGE_CLASSIFIER_BASELINE.md). Evaluasi test final dijalankan sekali; laporan lokal ada di `artifacts/bisindo-image-run-01/test_metrics.json`. Preview model dan collector webcam berlabel tersedia melalui [panduan demo webcam](docs/WEBCAM_IMAGE_CLASSIFIER.md), `scripts/webcam_image_classifier.py`, dan `scripts/collect_bisindo_webcam_samples.py`. Hasil training dan laporan rinci tetap lokal di `artifacts/`.
+
+Model SIBI terpilih (`svm_linear_c1`, 24 kelas) dapat diuji melalui webcam memakai [panduan uji webcam SIBI](docs/WEBCAM_SIBI_CLASSIFIER.md) dan `scripts/webcam_sibi_classifier.py`. Belum ada endpoint API atau UI inferensi yang dibuat; hasil webcam menjadi prasyarat langkah integrasi berikutnya.
+
+Eksperimen baru dengan dataset landmark NumPy sumber ASL memakai 63 fitur dan 24 kelas kandidat, dengan kesesuaian pose SIBI belum diverifikasi. Panduan audit, persiapan split, serta training SVM/MLP per epoch ada di [NPY_LANDMARK_EXPERIMENT.md](docs/NPY_LANDMARK_EXPERIMENT.md). Artefaknya terpisah dari model SIBI 132 fitur sebelumnya.
+
+Model 63 fitur terpilih dapat dijalankan melalui `python scripts/webcam_npy_landmarks.py`; [panduan webcam 63 fitur](docs/WEBCAM_NPY_LANDMARKS.md) menjelaskan pemeriksaan instalasi dan uji pose berlabel. Ringkasan trial disimpan tanpa gambar/video.
+
+Kelanjutan model SIBI lama menambahkan modul gerakan J/Z dari video lokal melalui [panduan temporal J/Z](docs/SIBI_JZ_TEMPORAL.md). Jalankan `python scripts/webcam_sibi_classifier.py --temporal-model artifacts/sibi-jz-v1/templates.npz` setelah ekstraksi dan fitting template. Modul bersifat eksperimental; penolakan gerakan lain belum terkalibrasi.
+
+Persentase keberhasilan ekstraksi dataset, cakupan gambar yang sudah/belum diproses, dan visualisasi per huruf tersedia di [laporan cakupan landmark](docs/LANDMARK_COVERAGE_REPORT.md). Reproduksi grafik dari log tersimpan dengan `python scripts/report_landmark_coverage.py`.

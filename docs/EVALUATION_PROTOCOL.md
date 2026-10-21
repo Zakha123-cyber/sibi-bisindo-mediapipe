@@ -2,6 +2,8 @@
 
 Status: protokol awal dikunci sebelum training; pengambilan data webcam belum dilakukan. Target awal tetap mengikuti [roadmap](MVP_ROADMAP.md). SIBI mencakup 24 kelas tersedia; BISINDO memuat kandidat A–Z yang kelayakan statisnya diverifikasi pada Tahap 2.
 
+Pembaruan 20 Oktober 2026: uji webcam development telah mengungkap kegagalan generalisasi. Pekerjaan berikutnya memakai [pilot lima huruf per bahasa](WEBCAM_PILOT.md), dengan pemisahan p001 train/p002 validation/p003 test. Pilot tiga orang ini tidak menggantikan kebutuhan evaluasi final pada minimal tiga peserta test baru di bawah.
+
 ## Split dataset offline
 
 SIBI: kelompokkan nama sumber inti `huruf_nomor` lintas mono, latar pengganti, dan augmentasi. Karantina seluruh turunan sumber yang memiliki kasus anotasi belum pasti. Urutkan sumber per kelas berdasarkan SHA-256 dari `42:<source_group>`, lalu alokasikan sekitar 15% test, 15% validation, dan sisanya train. Pembulatan ke bilangan terdekat diterapkan per kelas. Baseline hanya mengaktifkan mono tanpa augmentasi.

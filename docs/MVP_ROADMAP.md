@@ -1,6 +1,6 @@
 # Acuan penyelesaian MVP AI SIBI dan BISINDO
 
-Status: aktif, Tahap 1 dan ekstraksi teknis Tahap 2 selesai; validasi referensi pose masih terbuka. Referensi pose BISINDO dan metadata peserta tertentu belum tersedia dan dicatat eksplisit. Terakhir diperbarui: 13 Oktober 2026.
+Status: roadmap historis; acuan aktif digantikan oleh [reset model koordinat](COORDINATE_RESET_PLAN.md) sesuai keputusan pengguna 20 Oktober 2026. Fokus SIBI dahulu, dengan pose statis J/Z sumber ASL diterima untuk eksperimen, lalu BISINDO. Tidak ada pengambilan sampel tambahan atau penghapusan data/model lama pada reset ini. Checklist di bawah merekam tahapan sebelumnya.
 
 Dokumen ini menjadi acuan ruang lingkup, urutan kerja, dan kriteria selesai. Perbarui checklist berdasarkan bukti hasil pekerjaan. Jika pendekatan berubah, catat alasan dan dampaknya pada tabel keputusan di akhir dokumen sebelum melanjutkan pekerjaan yang bergantung padanya.
 
@@ -135,7 +135,7 @@ Percobaan pose terpisah berarti pengguna mengulang pose, bukan menghitung banyak
 
 ## 6. Aturan menjaga fokus
 
-1. Pekerjaan berikutnya adalah **Tahap 2: ekstraksi landmark dan fitur dari manifest data-v1**. Jangan langsung membangun API atau memilih model lebih besar sebelum detektor/preprocessing serta cakupan ekstraksinya diperiksa.
+1. Pekerjaan berikutnya adalah **pilot webcam kedua bahasa**: tinjau kandidat pose, kumpulkan trial berlabel, dan nilai model dengan pemisahan peserta. Ikuti [protokol pilot](WEBCAM_PILOT.md); endpoint/UI dilanjutkan setelah kualitas webcam layak.
 2. Gunakan baseline sederhana terlebih dahulu. Tambahkan CNN/model temporal hanya bila ada bukti kebutuhan; model temporal akan mengubah ruang lingkup MVP statis.
 3. Pertahankan data mentah. Koreksi, pengecualian, dan split disimpan sebagai manifest terpisah.
 4. Test tidak digunakan untuk memilih hyperparameter atau ambang. Jika sudah dipakai untuk iterasi, perlakukan hasil itu sebagai development dan siapkan test baru.
@@ -162,12 +162,13 @@ Git menyimpan kode, dokumentasi, konfigurasi contoh, notebook tanpa output, sert
 
 Notebook hasil eksekusi disimpan lokal di `notebooks/executed/`; `.gitignore` tidak dapat menyaring output yang tertanam dalam notebook sumber. Sebelum commit, bersihkan output notebook sumber dan periksa `git status`. File yang sudah tracked tidak otomatis dilepas oleh `.gitignore`.
 
-Artefak model dapat dibagikan terpisah saat integrasi memerlukannya, dengan metadata versi dan checksum dicatat di dokumentasi. Belum ada publikasi atau upload otomatis dalam alur ini.
+Artefak model dibagikan terpisah sebagai bundle dengan metadata versi dan checksum. Persiapan deployment terbaru ada di [DEPLOYMENT.md](DEPLOYMENT.md): GitHub Actions dapat mempublikasikan image runtime dan memperbarui VPS ketika diaktifkan; bobot model tidak ikut image/Git.
 
 ## 8. Log keputusan
 
 | Tanggal | Keputusan | Dasar / konsekuensi |
 |---|---|---|
+| 2026-10-21 | Dua checkpoint SIBI/BISINDO dipilih untuk integrasi FastAPI | HTTP/WebSocket dan halaman uji browser tersedia; Docker dan GitHub Actions + SSH branch main disiapkan untuk VPS Ubuntu. Model dipasang terpisah di server; domain/secret dan deployment pertama belum dikonfigurasi |
 | 2026-10-13 | MVP webcam, pose statis, keluaran huruf | Disepakati pengguna; kata/kalimat dan lintasan gerakan di luar tahap awal |
 | 2026-10-13 | Mulai training lokal | Perangkat memadai untuk baseline landmark; belum ada kebutuhan GPU untuk baseline ini |
 | 2026-10-13 | SIBI mono tanpa augmentasi sebagai baseline pertama | Sampling deteksi 99,4%, dibanding 60,2% pada multi; hasil masih perlu divalidasi pada webcam |
@@ -179,3 +180,6 @@ Artefak model dapat dibagikan terpisah saat integrasi memerlukannya, dengan meta
 | 2026-10-13 | Split SIBI berdasarkan sumber lintas varian | Seed 42, sekitar 70/15/15; baseline aktif mono: 1.001 train, 216 val, 216 test |
 | 2026-10-13 | Split BISINDO berdasarkan seri nama sementara | Train plain/AR, val 2, test 3; 6.480/780/780; sufiks bukan ID peserta terverifikasi |
 | 2026-10-13 | Snapshot data-v1 dikunci | Manifest/fingerprint dan 14 tes mencegah perubahan split tanpa tercatat; tidak mengklaim signer-independent |
+| 2026-10-20 | Pilot lima huruf untuk SIBI dan BISINDO | Model gambar dan landmark memperoleh skor dataset tinggi tetapi gagal pada webcam; pengguna menyepakati peninjauan pose dan data webcam dari peserta/sesi berbeda sebelum perluasan alfabet dan API |
+| 2026-10-20 | Peran peserta pilot tetap lintas bahasa/sesi | p001 train, p002 validation, p003 test; koleksi tanpa filter detektor, foto asli dikelompokkan per trial, dan semua label awal menunggu kurasi |
+| 2026-10-20 | Reset eksperimen model koordinat; SIBI dahulu | Acuan aktif COORDINATE_RESET_PLAN.md; cache landmark dipakai ulang, J/Z ASL diterima sebagai pose statis, training CNN1D/MLP dan SVM embedding disiapkan, tidak menghapus model lama atau mengambil sampel baru |

@@ -1,0 +1,13 @@
+# Allow only runtime code/config and its dependency manifests into the build.
+*
+!Dockerfile
+!requirements-features.txt
+!requirements-api.txt
+!requirements-service.txt
+!src/
+!src/**
+!configs/
+!configs/landmarks_v1.json
+!configs/landmarks_bisindo_kaggle_v2_conf03.json
+**/__pycache__/
+**/*.pyc

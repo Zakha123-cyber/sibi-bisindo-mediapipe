@@ -1,0 +1,23 @@
+{
+  "version": "webcam-pilot-v1",
+  "output_dir": "data/webcam_pilot_v1",
+  "pose_review_file": "docs/pilot_pose_review.csv",
+  "pose_status": "candidate_pending_human_reference_review",
+  "languages": {
+    "sibi": {"classes": ["A", "B", "C", "M", "N"], "reason": "A/B/C plus the similar M/N pair; provisional selection"},
+    "bisindo": {"classes": ["A", "B", "C", "R", "T"], "reason": "A/B/T plus C/R observed confusion; provisional selection"}
+  },
+  "participants": {"p001": "train", "p002": "val", "p003": "test"},
+  "sessions": ["s01", "s02"],
+  "positive_trials_per_class_per_session": 5,
+  "negative_trials_per_type_per_session": 2,
+  "negative_keys": {"1": "no_hand", "2": "neutral", "3": "non_sign_pose", "4": "transition"},
+  "countdown_seconds": 2.0,
+  "capture_seconds": 3.0,
+  "frame_interval_seconds": 0.25,
+  "jpeg_quality": 90,
+  "preview_mirrored": true,
+  "saved_images_mirrored": false,
+  "split_policy": "fixed_participant_role_across_languages_and_sessions",
+  "note": "Three-participant exploratory pilot, not final MVP acceptance. ASL is not used as SIBI ground truth."
+}

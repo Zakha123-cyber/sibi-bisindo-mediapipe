@@ -1,0 +1,11 @@
+mode,label,status,reference_url,reviewer,reviewed_on,notes
+sibi,A,pending,,,,Cocokkan bentuk dan orientasi dengan referensi SIBI
+sibi,B,pending,,,,Cocokkan bentuk dan orientasi dengan referensi SIBI
+sibi,C,pending,,,,Cocokkan bentuk dan orientasi dengan referensi SIBI
+sibi,M,pending,,,,Tinjau posisi ibu jari dan pembeda terhadap N
+sibi,N,pending,,,,Tinjau posisi ibu jari dan pembeda terhadap M
+bisindo,A,pending,,,,Periksa kedua tangan dan referensi alfabet BISINDO yang disepakati
+bisindo,B,pending,,,,Periksa kedua tangan dan referensi alfabet BISINDO yang disepakati
+bisindo,C,pending,,,,Periksa pembeda terhadap R pada contoh dataset
+bisindo,R,pending,,,,Periksa pembeda terhadap C pada contoh dataset
+bisindo,T,pending,,,,Pastikan pose statis dan orientasi tangan sesuai referensi

@@ -1,0 +1,117 @@
+import io
+from pathlib import Path
+import sys
+from types import SimpleNamespace
+import unittest
+
+import numpy as np
+from PIL import Image
+from fastapi.testclient import TestClient
+from starlette.websockets import WebSocketDisconnect
+
+ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/'src'))
+from sibi_bisindo.service.app import create_app
+from sibi_bisindo.service.settings import Settings
+from sibi_bisindo.service.runtime import InferenceService, BadFrame, Busy
+
+
+def response(language='sibi'):
+    return dict(language=language,model_id='fixture',status='predicted',detection_status='ok',label='A',score=.8,
+        score_type='softmax_uncalibrated',hand_count=1,width=640,height=480,landmarks=None,
+        preprocessing=dict(method='baseline',attempts=0,recovered=False,input_was_mirrored=False,coordinates='unmirrored_normalized_xyz'),
+        timings_ms=dict(detector=1.,classifier=.1,total=1.1))
+
+
+class FakeService:
+    def __init__(self,settings):self.ready=False;self.error=None;self.calls=[]
+    async def start(self):self.ready=True
+    async def close(self):self.ready=False
+    def descriptions(self):return {'models':{'sibi':{},'bisindo':{}}}
+    async def predict(self,*args):
+        self.calls.append(args)
+        if self.error:raise self.error
+        return response(args[0])
+
+
+class ApiTests(unittest.TestCase):
+    def setUp(self):
+        self.settings=Settings(max_frame_bytes=32)
+        self.app=create_app(self.settings,FakeService)
+        self.client=TestClient(self.app)
+        self.client.__enter__()
+    def tearDown(self):self.client.__exit__(None,None,None)
+
+    def test_routes_lifespan_and_openapi_binary_body(self):
+        self.assertEqual(self.client.get('/health/ready').status_code,200)
+        self.assertIn('bisindo',self.client.get('/v1/models').json()['models'])
+        schema=self.client.get('/openapi.json').json()
+        self.assertIn('image/jpeg',schema['paths']['/v1/predict/{language}']['post']['requestBody']['content'])
+        result=self.client.post('/v1/predict/bisindo?mirrored=true&include_landmarks=true',content=b'jpeg',headers={'Content-Type':'image/jpeg'})
+        self.assertEqual(result.status_code,200)
+        self.assertEqual(self.app.state.service.calls[-1],('bisindo',b'jpeg',True,True))
+        self.assertEqual(len(result.headers['x-request-id']),32)
+        self.assertEqual(result.headers['cache-control'],'no-store')
+
+    def test_http_rejects_language_content_size_and_origin(self):
+        cases=[('/v1/predict/asl',b'x',{'Content-Type':'image/jpeg'},422),
+               ('/v1/predict/sibi',b'x',{'Content-Type':'application/json'},415),
+               ('/v1/predict/sibi',b'',{'Content-Type':'image/jpeg'},422),
+               ('/v1/predict/sibi',b'x'*33,{'Content-Type':'image/jpeg'},413),
+               ('/v1/predict/sibi',b'x',{'Content-Type':'image/jpeg','Origin':'https://evil.example'},403)]
+        for url,body,headers,status in cases:
+            with self.subTest(status=status):self.assertEqual(self.client.post(url,content=body,headers=headers).status_code,status)
+        self.assertEqual(self.app.state.service.calls,[])
+
+    def test_cors_and_explicit_error_contract(self):
+        origin=self.settings.allowed_origins[0]
+        preflight=self.client.options('/v1/predict/sibi',headers={'Origin':origin,'Access-Control-Request-Method':'POST','Access-Control-Request-Headers':'content-type'})
+        self.assertEqual(preflight.status_code,200)
+        self.assertEqual(preflight.headers['access-control-allow-origin'],origin)
+        self.app.state.service.error=Busy('busy')
+        result=self.client.post('/v1/predict/sibi',content=b'j',headers={'Content-Type':'image/jpeg'})
+        self.assertEqual(result.status_code,503);self.assertEqual(result.headers['retry-after'],'1')
+        self.app.state.service.error=BadFrame('invalid image')
+        self.assertEqual(self.client.post('/v1/predict/sibi',content=b'j',headers={'Content-Type':'image/jpeg'}).status_code,422)
+
+    def test_websocket_origin_binary_size_and_prediction(self):
+        for origin in ['https://evil.example',None]:
+            with self.assertRaises(WebSocketDisconnect) as error:
+                headers={'Origin':origin} if origin else {}
+                with self.client.websocket_connect('/v1/ws/sibi',headers=headers):pass
+            self.assertEqual(error.exception.code,1008)
+        with self.client.websocket_connect('/v1/ws/bisindo',headers={'Origin':self.settings.allowed_origins[0]}) as ws:
+            ws.send_text('base64')
+            self.assertEqual(ws.receive_json()['code'],'binary_frame_required')
+            ws.send_bytes(b'jpeg')
+            self.assertEqual(ws.receive_json()['type'],'prediction')
+            self.app.state.service.error=Busy('busy')
+            ws.send_bytes(b'jpeg');self.assertEqual(ws.receive_json()['code'],'503')
+            ws.send_bytes(b'x'*33)
+            with self.assertRaises(WebSocketDisconnect) as error:ws.receive_json()
+            self.assertEqual(error.exception.code,1009)
+
+
+class DecodeTests(unittest.TestCase):
+    def test_decoder_rejects_bad_frames_limits_pixels_and_unmirrors_before_detection(self):
+        service=InferenceService(Settings(max_frame_pixels=3))
+        class Detector:
+            def extract(self,rgb,*args,**kwargs):
+                self.last=rgb.copy()
+                return SimpleNamespace(valid=True,raw=np.zeros((1,21,3)),width=rgb.shape[1],height=rgb.shape[0],status='ok')
+        class Model:
+            def predict(self,*args):return {'label':'A','score':.8,'score_type':'softmax_uncalibrated'}
+        detector=Detector();service.detectors={'sibi':detector};service.models={'sibi':Model()}
+        service.bundle={'models':{'sibi':{'source_run':'fixture'}}}
+        content=io.BytesIO();Image.fromarray(np.array([[[255,0,0],[0,0,255]]],dtype=np.uint8)).save(content,format='PNG')
+        try:
+            result=service._infer('sibi',content.getvalue(),False,True)
+            self.assertEqual(result['label'],'A');np.testing.assert_array_equal(detector.last[0,0],[0,0,255])
+            self.assertTrue(result['preprocessing']['input_was_mirrored'])
+            with self.assertRaises(BadFrame):service._infer('sibi',b'bad',False,False)
+            large=io.BytesIO();Image.new('RGB',(2,2)).save(large,format='PNG')
+            with self.assertRaisesRegex(BadFrame,'dimensions'):service._infer('sibi',large.getvalue(),False,False)
+        finally:service.executor.shutdown(wait=True)
+
+
+if __name__=='__main__':unittest.main()

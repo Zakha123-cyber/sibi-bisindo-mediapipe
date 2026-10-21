@@ -1,0 +1,36 @@
+name: sibi-bisindo-ai
+services:
+  ai:
+    image: ${AI_IMAGE:?Set AI_IMAGE to an immutable GHCR sha tag}
+    restart: unless-stopped
+    init: true
+    ports:
+      - "127.0.0.1:${AI_PORT:-8000}:8000"
+    environment:
+      MODEL_BUNDLE_DIR: /models
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:?Set the exact frontend origins}
+      MAX_FRAME_BYTES: "2000000"
+      MAX_FRAME_PIXELS: "2073600"
+      QUEUE_TIMEOUT_SECONDS: "0.1"
+      TORCH_THREADS: "2"
+      WEBSOCKET_IDLE_SECONDS: "60"
+    volumes:
+      - type: bind
+        source: ${MODEL_BUNDLE_PATH:?Set the absolute model bundle path}
+        target: /models
+        read_only: true
+        bind:
+          create_host_path: false
+    read_only: true
+    tmpfs:
+      - /tmp:size=134217728,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: [ALL]
+    mem_limit: 3g
+    cpus: 2.0
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

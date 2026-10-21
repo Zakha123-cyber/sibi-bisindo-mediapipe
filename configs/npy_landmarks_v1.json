@@ -1,0 +1,19 @@
+{
+  "version": "asl-source-sibi-candidate-v1",
+  "source_language": "asl",
+  "target_language": "sibi",
+  "pose_mapping": "unverified",
+  "dataset_root": "dataset/ASL Dataset",
+  "audit_dir": "data/audits/asl-landmarks-v1",
+  "audit_snapshot_sha256": "f3923cd2be8b47ef631202cd4cc14ecb285c2316e57b32feb874d0a98f0cf7a3",
+  "output_dir": "data/features/asl-source-sibi-candidate-v1",
+  "classes": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y"],
+  "excluded_classes": {"J": "motion_not_represented_by_single_pose", "Z": "motion_not_represented_by_single_pose"},
+  "feature_version": "wrist-maxdist63-v1",
+  "feature_dimension": 63,
+  "split_method": "per_class_numeric_filename_order_holdout_with_gap",
+  "train_fraction": 0.7,
+  "validation_fraction": 0.15,
+  "gap_samples_each_side": 10,
+  "seed": 42
+}

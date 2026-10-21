@@ -1,0 +1,7 @@
+{
+  "bundle_version": "selected-sibi-bisindo-v1",
+  "models": {
+    "sibi": "artifacts/coordinate-reset-v1/sibi_20261020_130607_889055",
+    "bisindo": "artifacts/bisindo-transfer-recovery-v2/bisindo_20261021_133454_756637"
+  }
+}
