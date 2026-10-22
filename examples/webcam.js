@@ -1,6 +1,7 @@
 'use strict';
 const $ = id => document.getElementById(id);
-if (location.pathname.startsWith('/demo/')) $('api').value = location.origin;
+if (document.body.dataset.apiBase) $('api').value = document.body.dataset.apiBase;
+else if (location.pathname.startsWith('/demo/')) $('api').value = location.origin;
 let session = 0, stream = null, socket = null, timer = null, watchdog = null;
 let active = false, pending = false, lastLandmarks = [], responses = [];
 let capturedAt = 0, hasProcessedFrame = false;
@@ -17,6 +18,7 @@ function clearPrediction(text = 'Menunggu pose tangan') {
 function resetControls() {
   $('start').disabled = active; $('stop').disabled = !active;
   for (const id of ['api', 'language', 'check-api']) $(id).disabled = active;
+  if ($('production-check')) $('production-check').disabled = active;
 }
 function stop(message = 'Kamera dihentikan.', error = false) {
   session++; active = false; pending = false; clearTimeout(timer); clearTimeout(watchdog);
@@ -53,7 +55,9 @@ function friendlyError(error) {
   if (error.name === 'NotFoundError') return 'Kamera tidak ditemukan pada perangkat ini.';
   if (error.name === 'NotReadableError') return 'Kamera sedang dipakai aplikasi lain. Tutup aplikasi kamera lalu coba lagi.';
   if (error.name === 'AbortError') return 'API belum merespons. Tunggu startup model selesai di terminal.';
-  if (error instanceof TypeError) return 'API belum terhubung. Jalankan scripts/run_local_demo.py dan periksa alamat API.';
+  if (error instanceof TypeError) return document.body.dataset.apiBase
+    ? `API produksi belum terhubung. Periksa internet dan izin origin ${location.origin} pada server.`
+    : 'API belum terhubung. Jalankan scripts/run_local_demo.py dan periksa alamat API.';
   return error.message || 'Terjadi kesalahan. Coba hubungkan kembali.';
 }
 function drawLandmarks() {

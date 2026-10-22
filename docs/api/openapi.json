@@ -1,0 +1,1014 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SIBI / BISINDO Alphabet API",
+    "description": "Service pengenalan pose alfabet statis SIBI/BISINDO. Pilih bahasa secara eksplisit. Kirim byte JPEG/PNG, bukan JSON, base64, atau multipart. Kontrak HTTP menggunakan OpenAPI; detail webcam WebSocket tersedia pada extension x-websocket-contract di dokumen ini. Extension tersebut dibaca manual dan tidak otomatis menjadi request WebSocket pada importer OpenAPI. Tidak memerlukan API key/JWT saat ini. CORS bukan autentikasi.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/health/live": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Live",
+        "operationId": "live_health_live_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "const": "alive"
+                    }
+                  }
+                },
+                "example": {
+                  "status": "alive"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "description": "ID request untuk pelacakan galat HTTP.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Origin tidak diizinkan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Galat internal; simpan error_id bila tersedia.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Ready",
+        "operationId": "ready_health_ready_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "languages"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "const": "ready"
+                    },
+                    "languages": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "sibi",
+                          "bisindo"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "ready",
+                  "languages": [
+                    "sibi",
+                    "bisindo"
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "description": "ID request untuk pelacakan galat HTTP.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Origin tidak diizinkan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Galat internal; simpan error_id bila tersedia.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Model belum siap.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/models": {
+      "get": {
+        "tags": [
+          "models"
+        ],
+        "summary": "Models",
+        "operationId": "models_v1_models_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "bundle_version",
+                    "models"
+                  ],
+                  "properties": {
+                    "bundle_version": {
+                      "type": "string"
+                    },
+                    "models": {
+                      "type": "object",
+                      "required": [
+                        "sibi",
+                        "bisindo"
+                      ],
+                      "properties": {
+                        "sibi": {
+                          "$ref": "#/components/schemas/ModelDescription"
+                        },
+                        "bisindo": {
+                          "$ref": "#/components/schemas/ModelDescription"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "description": "ID request untuk pelacakan galat HTTP.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Origin tidak diizinkan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Galat internal; simpan error_id bila tersedia.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/predict/{language}": {
+      "post": {
+        "tags": [
+          "prediction"
+        ],
+        "summary": "Prediksi satu pose alfabet dari gambar",
+        "operationId": "predict_v1_predict__language__post",
+        "parameters": [
+          {
+            "name": "language",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "enum": [
+                "sibi",
+                "bisindo"
+              ],
+              "type": "string",
+              "title": "Language"
+            },
+            "description": "Pilih sibi atau bisindo secara eksplisit."
+          },
+          {
+            "name": "include_landmarks",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Include Landmarks"
+            },
+            "description": "Sertakan titik landmark untuk overlay; default false."
+          },
+          {
+            "name": "mirrored",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Mirrored"
+            },
+            "description": "true hanya jika piksel input sudah dimirror; default false. CSS mirror preview tidak memerlukan true."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Prediction"
+                },
+                "examples": {
+                  "sibi": {
+                    "summary": "Contoh ilustratif SIBI, bukan benchmark",
+                    "value": {
+                      "language": "sibi",
+                      "model_id": "sibi_20261020_130607_889055",
+                      "status": "predicted",
+                      "detection_status": "ok",
+                      "label": "A",
+                      "score": 0.94,
+                      "score_type": "softmax_uncalibrated",
+                      "hand_count": 1,
+                      "width": 640,
+                      "height": 480,
+                      "preprocessing": {
+                        "method": "baseline",
+                        "attempts": 0,
+                        "recovered": false,
+                        "input_was_mirrored": false,
+                        "coordinates": "unmirrored_normalized_xyz"
+                      },
+                      "timings_ms": {
+                        "detector": 30.0,
+                        "classifier": 1.0,
+                        "total": 32.0
+                      },
+                      "landmarks": null
+                    }
+                  },
+                  "bisindo": {
+                    "summary": "Contoh ilustratif BISINDO, bukan benchmark",
+                    "value": {
+                      "language": "bisindo",
+                      "model_id": "bisindo_20261021_133454_756637",
+                      "status": "predicted",
+                      "detection_status": "two_hands_actor_unverified",
+                      "label": "A",
+                      "score": 0.94,
+                      "score_type": "softmax_uncalibrated",
+                      "hand_count": 2,
+                      "width": 640,
+                      "height": 480,
+                      "preprocessing": {
+                        "method": "baseline",
+                        "attempts": 0,
+                        "recovered": false,
+                        "input_was_mirrored": false,
+                        "coordinates": "unmirrored_normalized_xyz"
+                      },
+                      "timings_ms": {
+                        "detector": 30.0,
+                        "classifier": 1.0,
+                        "total": 32.0
+                      },
+                      "landmarks": null
+                    }
+                  },
+                  "no_hand": {
+                    "summary": "Frame valid, tidak ada tangan; include_landmarks=true",
+                    "value": {
+                      "language": "sibi",
+                      "model_id": "sibi_20261020_130607_889055",
+                      "status": "no_hand",
+                      "detection_status": "no_hand",
+                      "label": null,
+                      "score": null,
+                      "score_type": null,
+                      "hand_count": 0,
+                      "width": 640,
+                      "height": 480,
+                      "preprocessing": {
+                        "method": "baseline",
+                        "attempts": 0,
+                        "recovered": false,
+                        "input_was_mirrored": false,
+                        "coordinates": "unmirrored_normalized_xyz"
+                      },
+                      "timings_ms": {
+                        "detector": 30.0,
+                        "classifier": 0.0,
+                        "total": 31.0
+                      },
+                      "landmarks": []
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "description": "ID request untuk pelacakan galat HTTP.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validasi parameter gagal atau gambar kosong/rusak/dimensinya terlalu besar.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Origin tidak diizinkan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Galat internal; simpan error_id bila tersedia.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Frame melampaui 2.000.000 byte.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Content-Type harus image/jpeg atau image/png.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Jalur inferensi sibuk atau service belum siap. Tunggu lalu kirim frame terbaru.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "1"
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "image/jpeg": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            },
+            "image/png": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "description": "Kirim isi berkas gambar secara langsung. Null label adalah hasil sah, bukan galat HTTP.",
+        "x-codeSamples": [
+          {
+            "lang": "Shell",
+            "source": "curl -X POST \"https://ai.signtech.tech/v1/predict/sibi?include_landmarks=true\" -H \"Content-Type: image/jpeg\" --data-binary @frame.jpg"
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Prediction": {
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "sibi",
+              "bisindo"
+            ],
+            "title": "Language",
+            "description": "Model yang dipilih pemanggil; tidak ada pemilihan bahasa otomatis."
+          },
+          "model_id": {
+            "type": "string",
+            "title": "Model Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "predicted bila ekstraksi valid; selain itu no_hand, unexpected_extra_hand, atau invalid_geometry."
+          },
+          "detection_status": {
+            "type": "string",
+            "title": "Detection Status",
+            "description": "ok (SIBI satu tangan), one_hand_completeness_unverified, two_hands_actor_unverified, no_hand, unexpected_extra_hand, atau invalid_geometry."
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label",
+            "description": "Huruf hasil model. Null bila ekstraksi tidak valid. Tidak ada kelas unknown/background."
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score",
+            "description": "Softmax belum dikalibrasi; 0.94 tidak menjamin 94% benar. Null bila tidak ada prediksi."
+          },
+          "score_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score Type"
+          },
+          "hand_count": {
+            "type": "integer",
+            "maximum": 2.0,
+            "minimum": 0.0,
+            "title": "Hand Count",
+            "description": "Jumlah tangan terdeteksi, tidak menjamin kelengkapan pose atau satu pelaku."
+          },
+          "width": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Width"
+          },
+          "height": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Height"
+          },
+          "preprocessing": {
+            "$ref": "#/components/schemas/Preprocessing"
+          },
+          "timings_ms": {
+            "$ref": "#/components/schemas/Timings",
+            "description": "Waktu proses server dalam milidetik, tidak mencakup perjalanan jaringan atau render browser."
+          },
+          "landmarks": {
+            "anyOf": [
+              {
+                "items": {
+                  "items": {
+                    "items": {
+                      "type": "number"
+                    },
+                    "type": "array"
+                  },
+                  "type": "array"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Landmarks",
+            "description": "Null jika tidak diminta. Jika diminta: [jumlah_tangan][21][3] xyz; tanpa tangan menghasilkan []. Slot diurutkan menurut wrist x lalu y pada gambar. x/y ternormalisasi ukuran gambar; z relatif per tangan. Selalu koordinat unmirrored."
+          }
+        },
+        "type": "object",
+        "required": [
+          "language",
+          "model_id",
+          "status",
+          "detection_status",
+          "label",
+          "score",
+          "score_type",
+          "hand_count",
+          "width",
+          "height",
+          "preprocessing",
+          "timings_ms",
+          "landmarks"
+        ],
+        "title": "Prediction"
+      },
+      "Preprocessing": {
+        "properties": {
+          "method": {
+            "type": "string",
+            "title": "Method"
+          },
+          "attempts": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Attempts"
+          },
+          "recovered": {
+            "type": "boolean",
+            "title": "Recovered"
+          },
+          "input_was_mirrored": {
+            "type": "boolean",
+            "title": "Input Was Mirrored"
+          },
+          "coordinates": {
+            "type": "string",
+            "const": "unmirrored_normalized_xyz",
+            "title": "Coordinates"
+          }
+        },
+        "type": "object",
+        "required": [
+          "method",
+          "attempts",
+          "recovered",
+          "input_was_mirrored",
+          "coordinates"
+        ],
+        "title": "Preprocessing"
+      },
+      "Timings": {
+        "properties": {
+          "detector": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Detector"
+          },
+          "classifier": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Classifier"
+          },
+          "total": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Total"
+          }
+        },
+        "type": "object",
+        "required": [
+          "detector",
+          "classifier",
+          "total"
+        ],
+        "title": "Timings"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "ApiError": {
+        "type": "object",
+        "required": [
+          "detail"
+        ],
+        "properties": {
+          "detail": {
+            "type": "string"
+          }
+        }
+      },
+      "ModelDescription": {
+        "type": "object",
+        "required": [
+          "model_id",
+          "labels",
+          "recognition",
+          "preprocessing",
+          "limitations"
+        ],
+        "properties": {
+          "model_id": {
+            "type": "string"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "recognition": {
+            "type": "string",
+            "const": "static_pose"
+          },
+          "preprocessing": {
+            "type": "string"
+          },
+          "limitations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "WebSocketPrediction": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Prediction"
+          },
+          {
+            "type": "object",
+            "required": [
+              "type"
+            ],
+            "properties": {
+              "type": {
+                "const": "prediction",
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "WebSocketError": {
+        "type": "object",
+        "required": [
+          "type",
+          "code",
+          "detail"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "error"
+          },
+          "code": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://ai.signtech.tech",
+      "description": "Production"
+    }
+  ],
+  "security": [],
+  "externalDocs": {
+    "url": "https://ai.signtech.tech/docs",
+    "description": "Swagger UI live"
+  },
+  "x-websocket-contract": {
+    "description": "Kontrak tambahan untuk dibaca manual; bukan operasi HTTP OpenAPI.",
+    "urls": {
+      "sibi": "wss://ai.signtech.tech/v1/ws/sibi",
+      "bisindo": "wss://ai.signtech.tech/v1/ws/bisindo"
+    },
+    "query_parameters": [
+      {
+        "name": "include_landmarks",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "boolean",
+          "default": false,
+          "title": "Include Landmarks"
+        },
+        "description": "Sertakan titik landmark untuk overlay; default false."
+      },
+      {
+        "name": "mirrored",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "boolean",
+          "default": false,
+          "title": "Mirrored"
+        },
+        "description": "true hanya jika piksel input sudah dimirror; default false. CSS mirror preview tidak memerlukan true."
+      }
+    ],
+    "handshake": "Origin wajib dan harus ada di allowlist server. Browser mengirim Origin otomatis; klien non-browser perlu mengisinya. Bahasa/origin tidak sah ditolak sebelum accept, sehingga klien dapat melihat HTTP 403 saat handshake, bukan close frame 1008.",
+    "send": {
+      "frame_type": "binary",
+      "payload": "Byte JPEG/PNG berupa Blob atau ArrayBuffer. Bukan JSON/base64/multipart."
+    },
+    "receive": {
+      "frame_type": "text",
+      "payload": "JSON",
+      "schema": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/WebSocketPrediction"
+          },
+          {
+            "$ref": "#/components/schemas/WebSocketError"
+          }
+        ]
+      }
+    },
+    "flow": [
+      "Buka koneksi dengan bahasa pilihan.",
+      "Ambil frame kamera dan encode JPEG/PNG.",
+      "Kirim satu frame biner lalu tunggu satu respons.",
+      "Saat type=prediction, periksa label null sebelum menampilkan huruf.",
+      "Saat code=503, tunggu singkat lalu kirim frame kamera terbaru.",
+      "Jangan menumpuk frame lama; jangan gunakan interval pengiriman tanpa menunggu respons.",
+      "Tutup koneksi lama sebelum mengganti bahasa; hentikan track kamera saat selesai."
+    ],
+    "error_codes": {
+      "binary_frame_required": "Frame teks ditolak.",
+      "empty_frame": "Payload kosong.",
+      "422": "Gambar tidak valid.",
+      "503": "Inferensi sibuk; retry dengan frame terbaru.",
+      "500": "Galat internal; simpan error_id."
+    },
+    "close_codes": {
+      "1008": "Idle tanpa frame selama 60 detik; kebijakan bahasa/origin juga memakai penolakan sebelum accept.",
+      "1009": "Frame terlalu besar."
+    },
+    "examples": {
+      "prediction": {
+        "type": "prediction",
+        "language": "sibi",
+        "model_id": "sibi_20261020_130607_889055",
+        "status": "predicted",
+        "detection_status": "ok",
+        "label": "A",
+        "score": 0.94,
+        "score_type": "softmax_uncalibrated",
+        "hand_count": 1,
+        "width": 640,
+        "height": 480,
+        "preprocessing": {
+          "method": "baseline",
+          "attempts": 0,
+          "recovered": false,
+          "input_was_mirrored": false,
+          "coordinates": "unmirrored_normalized_xyz"
+        },
+        "timings_ms": {
+          "detector": 30.0,
+          "classifier": 1.0,
+          "total": 32.0
+        },
+        "landmarks": null
+      },
+      "no_hand": {
+        "type": "prediction",
+        "language": "sibi",
+        "model_id": "sibi_20261020_130607_889055",
+        "status": "no_hand",
+        "detection_status": "no_hand",
+        "label": null,
+        "score": null,
+        "score_type": null,
+        "hand_count": 0,
+        "width": 640,
+        "height": 480,
+        "preprocessing": {
+          "method": "baseline",
+          "attempts": 0,
+          "recovered": false,
+          "input_was_mirrored": false,
+          "coordinates": "unmirrored_normalized_xyz"
+        },
+        "timings_ms": {
+          "detector": 30.0,
+          "classifier": 0.0,
+          "total": 31.0
+        },
+        "landmarks": []
+      },
+      "error": {
+        "type": "error",
+        "code": "503",
+        "detail": "Inference lane is busy; retry after the current frame"
+      }
+    },
+    "javascript_example": "const ws = new WebSocket('wss://ai.signtech.tech/v1/ws/sibi?include_landmarks=true');\n// frameBlob harus JPEG/PNG; kirim sesudah event open.\nws.onopen = () => ws.send(frameBlob);\nws.onmessage = event => { const result = JSON.parse(event.data); console.log(result); };\n// Kirim frame berikutnya hanya setelah onmessage. Gunakan examples/webcam.js untuk loop lengkap."
+  },
+  "x-integration": {
+    "production_origins": [
+      "https://signtech.tech",
+      "https://ai.signtech.tech"
+    ],
+    "demo_origins": [
+      "http://localhost:5173",
+      "http://127.0.0.1:5173"
+    ],
+    "origin_note": "Origin demo di atas telah diizinkan pada VM. www, subdomain, atau port lain perlu ditambahkan ke ALLOWED_ORIGINS.",
+    "limits": {
+      "max_frame_bytes": 2000000,
+      "max_frame_pixels": 2073600,
+      "websocket_idle_seconds": 60.0,
+      "concurrent_inference": 1
+    },
+    "camera": {
+      "suggested_resolution": [
+        640,
+        480
+      ],
+      "jpeg_quality": 0.8,
+      "preserve_aspect_ratio": true,
+      "input_pixels": "Unmirrored RGB encoded as JPEG/PNG.",
+      "overlay": "Pasangkan landmark dengan frame yang dikirim; video live dapat bergerak lebih dulu daripada respons API.",
+      "secure_context": "Browser memerlukan HTTPS atau localhost untuk akses webcam."
+    },
+    "limitations": [
+      "J/Z SIBI merupakan pose statis, belum pengenalan gerakan.",
+      "D/F/P BISINDO dapat tertukar pada webcam.",
+      "Jumlah tangan tidak menentukan bahasa; pilih mode secara eksplisit.",
+      "Skor tidak terkalibrasi dan tidak ada kelas unknown/background."
+    ],
+    "privacy": "Service tidak menyimpan frame atau riwayat prediksi pengguna.",
+    "authentication": "Belum ada API key/JWT. Allowlist Origin bukan autentikasi.",
+    "proxy_errors": "Nginx dapat mengembalikan galat non-JSON, misalnya 502/504; periksa HTTP status sebelum parsing JSON.",
+    "live_schema_url": "https://ai.signtech.tech/openapi.json",
+    "export_command": "& .\\.venv-service\\Scripts\\python.exe scripts/export_api_docs.py"
+  }
+}

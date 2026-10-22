@@ -10,6 +10,7 @@ RUN python -m pip install --no-cache-dir torch==2.6.0 --index-url https://downlo
 RUN useradd --uid 10001 --create-home app
 COPY src/ ./src/
 COPY configs/ ./configs/
+COPY examples/production.html examples/webcam.css examples/webcam.js examples/production-demo.css examples/production-demo.js ./examples/
 USER app
 EXPOSE 8000
 HEALTHCHECK --interval=15s --timeout=5s --start-period=90s --retries=3 \

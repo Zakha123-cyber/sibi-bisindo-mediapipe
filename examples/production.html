@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Uji API Produksi · SIBI & BISINDO</title>
+  <link rel="stylesheet" href="webcam.css">
+  <link rel="stylesheet" href="production-demo.css">
+  <script src="webcam.js" defer></script>
+  <script src="production-demo.js" defer></script>
+</head>
+<body data-api-base="https://ai.signtech.tech">
+  <main class="shell">
+    <header class="page-heading">
+      <div><p class="eyebrow">ALFABET BAHASA ISYARAT</p><h1>Uji API produksi</h1><p class="subtitle">Inferensi langsung ke ai.signtech.tech. Pilih bahasa dan uji pose melalui webcam.</p></div>
+      <span id="connection" class="badge" role="status">API belum diperiksa</span>
+    </header>
+    <section class="controls card" aria-label="Pengaturan kamera">
+      <label>Bahasa<select id="language"><option value="sibi">SIBI</option><option value="bisindo">BISINDO</option></select></label>
+      <label class="api-field">Alamat API<input id="api" type="url" value="https://ai.signtech.tech" spellcheck="false" readonly></label>
+      <button id="check-api" class="button secondary" type="button">Cek API</button>
+      <div class="camera-buttons"><button id="start" class="button primary" type="button">Mulai kamera</button><button id="stop" class="button secondary" type="button" disabled>Berhenti</button></div>
+    </section>
+    <section id="production-report-panel" class="production-panel card" aria-label="Uji integrasi produksi">
+      <h2>Periksa koneksi sebelum menyalakan kamera</h2>
+      <p>Uji ini mengirim gambar putih sintetis ke HTTP dan WebSocket SIBI/BISINDO. Kamera belum dibuka.</p>
+      <button id="production-check" class="button secondary" type="button">Uji koneksi lengkap</button>
+      <p id="production-result" role="status">Belum diuji. Klik tombol di atas untuk memeriksa kedua model.</p>
+      <ol id="production-report"></ol>
+    </section>
+    <div class="workspace">
+      <section class="camera-card card" aria-label="Preview kamera">
+        <div class="camera-heading"><span>Webcam</span><span id="camera-state" class="muted">Belum aktif</span></div>
+        <div id="stage" class="stage mirrored">
+          <video id="video" autoplay muted playsinline></video><canvas id="processed-frame" aria-hidden="true"></canvas><canvas id="overlay" aria-hidden="true"></canvas>
+          <div id="placeholder" class="placeholder"><span class="camera-symbol" aria-hidden="true">&#9678;</span><strong>Kamera belum dimulai</strong><span>Preview akan muncul di sini.</span></div>
+        </div>
+        <div class="preview-options"><label><input id="mirror" type="checkbox" checked> Cerminkan preview</label><label><input id="landmarks" type="checkbox" checked> Tampilkan landmark</label><label><input id="sync-preview" type="checkbox" checked> Preview sinkron</label></div>
+        <p id="pose-help" class="helper">Gunakan satu tangan dan pastikan semua jari terlihat.</p>
+      </section>
+      <aside class="result-card card" aria-label="Hasil deteksi">
+        <p class="eyebrow">HURUF TERDETEKSI</p><output id="letter" class="letter" aria-label="Huruf terdeteksi">—</output>
+        <p id="prediction-state" class="prediction-state">Menunggu kamera</p>
+        <div class="score-heading"><span>Skor model</span><strong id="score">—</strong></div>
+        <div id="score-meter" class="score-track" role="progressbar" aria-label="Skor model" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0"><div id="score-fill"></div></div>
+        <p class="score-note">Skor belum dikalibrasi sebagai peluang kebenaran.</p>
+        <dl class="metrics"><div><dt>Tangan</dt><dd id="hands">—</dd></div><div><dt>Proses API</dt><dd id="latency">—</dd></div><div><dt>Jeda frame</dt><dd id="frame-age">—</dd></div><div><dt>Frame/detik</dt><dd id="fps">—</dd></div></dl>
+        <p id="status" class="status" role="status" aria-live="polite">Klik Mulai kamera untuk menguji deteksi.</p>
+      </aside>
+    </div>
+    <footer><p id="limitations">J dan Z SIBI dikenali sebagai pose statis, belum sebagai gerakan.</p><p>Preview sinkron menampilkan frame yang sudah diproses agar landmark tepat pada tangan. Matikan untuk video kamera yang terus bergerak. Halaman ini tidak merekam atau menyimpan gambar.</p></footer>
+    <canvas id="capture" hidden></canvas>
+  </main>
+</body>
+</html>

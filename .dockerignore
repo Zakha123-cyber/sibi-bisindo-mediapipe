@@ -9,5 +9,11 @@
 !configs/
 !configs/landmarks_v1.json
 !configs/landmarks_bisindo_kaggle_v2_conf03.json
+!examples/
+!examples/production.html
+!examples/webcam.css
+!examples/webcam.js
+!examples/production-demo.css
+!examples/production-demo.js
 **/__pycache__/
 **/*.pyc

@@ -1,8 +1,10 @@
 # Service AI alfabet SIBI dan BISINDO
 
-FastAPI untuk dua checkpoint terpilih tersedia: [kontrak developer web](docs/API_CONTRACT.md), [deployment Docker + GitHub Actions](docs/DEPLOYMENT.md), dan [pemilahan file GitHub](docs/GITHUB_PUBLISH_CHECKLIST.md). Bundle model disimpan terpisah dari Git di `models/selected-sibi-bisindo-v1/`. API sudah diperiksa lokal; build Docker dan deployment VPS masih perlu dijalankan pada lingkungan target.
+FastAPI untuk dua checkpoint terpilih tersedia: [kontrak developer web](docs/API_CONTRACT.md), [deployment Docker + GitHub Actions](docs/DEPLOYMENT.md), dan [pemilahan file GitHub](docs/GITHUB_PUBLISH_CHECKLIST.md). Bundle model disimpan terpisah dari Git di `models/selected-sibi-bisindo-v1/`. Service sudah berjalan di `https://ai.signtech.tech`.
 
 Untuk mencoba deteksi webcam di komputer ini, jalankan `& '.\.venv-service\Scripts\python.exe' scripts/run_local_demo.py` dari direktori proyek, lalu buka `http://localhost:8000`. Pilih SIBI atau BISINDO dan klik **Mulai kamera**. [Petunjuk lokal lengkap](docs/DEPLOYMENT.md#menjalankan-lokal).
+
+Untuk menguji **API yang sudah dideploy**, buka [halaman simulasi produksi](https://ai.signtech.tech/production.html) di Chrome atau Edge. Halaman memakai HTTPS/WSS `ai.signtech.tech` dan menyediakan pemeriksaan koneksi tanpa kamera. Alternatif lokal: jalankan `& '.\.venv-service\Scripts\python.exe' scripts/run_production_demo.py` lalu buka `http://localhost:5173/production.html`. [Panduan simulasi produksi](docs/PRODUCTION_DEMO.md).
 
 MVP yang disepakati: mengenali pose huruf statis dari webcam, dengan mode SIBI/BISINDO dipilih pengguna. Dua model koordinat MediaPipe terpilih kini memiliki service FastAPI dan halaman HTML untuk uji integrasi; UI produk menjadi tanggung jawab aplikasi web. Latensi realtime, terutama fallback BISINDO, masih perlu diperhatikan saat deployment.
 

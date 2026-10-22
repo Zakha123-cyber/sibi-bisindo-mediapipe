@@ -1,5 +1,7 @@
 # Kontrak API untuk developer web
 
+Base URL produksi: `https://ai.signtech.tech`. Berkas yang dapat dikirim ke developer: [OpenAPI JSON lengkap](api/openapi.json). Dokumen JSON tersebut mencakup HTTP dan extension `x-websocket-contract` untuk dibaca manual; importer OpenAPI dapat mengabaikan extension WebSocket. Swagger live: https://ai.signtech.tech/docs. Ekspor ulang dengan `& '.\.venv-service\Scripts\python.exe' scripts/export_api_docs.py` setelah kontrak service berubah.
+
 Service mengenali satu pose alfabet statis per frame. Pilih bahasa secara eksplisit: `sibi` atau `bisindo`. Tidak merangkai kata/kalimat. J/Z SIBI masih memakai pose statis; D/F/P BISINDO memiliki keterbatasan pada webcam.
 
 ## Endpoint
@@ -34,7 +36,7 @@ canvas.width = 640;
 canvas.height = 480;
 canvas.getContext('2d').drawImage(video, 0, 0, 640, 480);
 const frame = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.8));
-const response = await fetch('https://ai.example.com/v1/predict/bisindo', {
+const response = await fetch('https://ai.signtech.tech/v1/predict/bisindo', {
   method: 'POST', headers: {'Content-Type': 'image/jpeg'}, body: frame
 });
 if (!response.ok) throw new Error(await response.text());
@@ -77,7 +79,7 @@ Jika diminta, `landmarks` berbentuk `[jumlah_tangan][21][3]`; slot diurutkan men
 
 ## WebSocket
 
-URL: `wss://ai.example.com/v1/ws/bisindo`. Kirim Blob/ArrayBuffer JPEG/PNG; tunggu event `message`, lalu kirim frame selanjutnya. Browser mengirim header Origin otomatis dan origin tersebut harus ada pada konfigurasi server. WebSocket tidak dilindungi middleware CORS HTTP, sehingga handshake diperiksa tersendiri.
+URL: `wss://ai.signtech.tech/v1/ws/bisindo`. Kirim Blob/ArrayBuffer JPEG/PNG; tunggu event `message`, lalu kirim frame selanjutnya. Browser mengirim header Origin otomatis dan origin tersebut harus ada pada konfigurasi server. WebSocket tidak dilindungi middleware CORS HTTP, sehingga handshake diperiksa tersendiri. Origin/bahasa yang ditolak sebelum koneksi diterima dapat tampak sebagai HTTP 403 saat handshake, bukan close frame 1008.
 
 Respons sukses sama dengan respons HTTP dengan tambahan `"type":"prediction"`. Error berupa `{"type":"error","code":"503","detail":"..."}` atau `binary_frame_required`/`empty_frame`. Frame terlalu besar menutup koneksi dengan kode 1009; origin atau bahasa tidak sah ditolak dengan kode 1008. Koneksi tanpa frame selama 60 detik ditutup.
 

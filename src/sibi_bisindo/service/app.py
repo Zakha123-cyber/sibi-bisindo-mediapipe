@@ -2,12 +2,13 @@
 import asyncio
 from contextlib import asynccontextmanager
 import logging
+from pathlib import Path
 from typing import Literal
 from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 
 from .settings import Settings
 from .runtime import InferenceService, BadFrame, Busy
@@ -43,6 +44,19 @@ def create_app(settings=None, service_factory=InferenceService):
         response.headers['X-Request-ID'] = request_id
         response.headers['Cache-Control'] = 'no-store'
         return response
+
+    # Only the five files needed for the public webcam demo are served here.
+    demo_dir = Path(__file__).resolve().parents[3] / 'examples'
+    for filename in ('production.html', 'webcam.css', 'webcam.js',
+                     'production-demo.css', 'production-demo.js'):
+        def demo_asset(name):
+            async def serve(request: Request):
+                return FileResponse(demo_dir / name)
+            return serve
+        app.add_route('/' + filename, demo_asset(filename), methods=['GET'])
+
+    @app.get('/', include_in_schema=False)
+    async def homepage(): return RedirectResponse('/production.html')
 
     @app.get('/health/live',tags=['health'])
     async def live(): return {'status':'alive'}

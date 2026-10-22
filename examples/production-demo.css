@@ -1,0 +1,5 @@
+.production-panel{padding:18px 20px;margin-bottom:20px}
+.production-panel h2{font-size:17px;margin:0 0 7px}
+.production-panel p{font-size:13px;color:var(--muted);margin:8px 0}
+.production-panel ol{font-size:12px;padding-left:20px;overflow-wrap:anywhere}
+.production-panel .passed{color:#116656}.production-panel .error{color:var(--red)}

@@ -53,6 +53,19 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(len(result.headers['x-request-id']),32)
         self.assertEqual(result.headers['cache-control'],'no-store')
 
+    def test_production_demo_serves_only_its_public_assets(self):
+        home=self.client.get('/',follow_redirects=False)
+        self.assertEqual(home.status_code,307)
+        self.assertEqual(home.headers['location'],'/production.html')
+        page=self.client.get('/production.html')
+        self.assertEqual(page.status_code,200)
+        self.assertIn('text/html',page.headers['content-type'])
+        for filename in ('webcam.css','webcam.js','production-demo.css','production-demo.js'):
+            self.assertIn(filename,page.text)
+            self.assertEqual(self.client.get('/'+filename).status_code,200)
+        self.assertEqual(self.client.get('/webcam.html').status_code,404)
+        self.assertNotIn('/production.html',self.client.get('/openapi.json').json()['paths'])
+
     def test_http_rejects_language_content_size_and_origin(self):
         cases=[('/v1/predict/asl',b'x',{'Content-Type':'image/jpeg'},422),
                ('/v1/predict/sibi',b'x',{'Content-Type':'application/json'},415),
