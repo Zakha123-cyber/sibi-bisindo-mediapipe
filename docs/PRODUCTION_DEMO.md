@@ -15,6 +15,8 @@ Buka **http://localhost:5173/production.html** untuk versi lokal. Launcher hanya
 
 Preview sinkron memasangkan landmark dengan frame yang dikirim. Jika dimatikan, video live terus bergerak dan landmark dapat tertinggal akibat inferensi/jaringan. Preview cermin tidak membalik piksel input API. Halaman tidak merekam atau menyimpan gambar. Frame kamera dikirim ke VM untuk diproses.
 
+Untuk mencoba kondisi gelap, nyalakan **Bantu cahaya redup** di bawah preview. Browser menaikkan kecerahan 1,25× dan kontras 1,10× pada frame yang dikirim ke API; preview sinkron menampilkan frame yang sama. Opsi ini mati secara default agar input sesuai alur asli. Bandingkan pose yang sama dengan opsi mati/nyala, amati apakah landmark dan huruf membaik, serta matikan jika detail jari menjadi memutih atau noise makin kuat. Opsi ini masih eksperimen; peningkatan akurasi belum terukur. Pencahayaan fisik yang lebih baik atau pengaturan eksposur kamera tetap lebih baik jika tersedia.
+
 Origin `http://localhost:5173` dan `http://127.0.0.1:5173` telah ditambahkan secara spesifik ke `ALLOWED_ORIGINS` VM, bersama kedua origin produksi. Jangan membuka berkas melalui `file://`. Jika port diubah dengan `--port`, tambahkan origin port tersebut ke konfigurasi VM; jangan memakai wildcard atau origin `null`.
 
 Jika port 5173 terpakai, hentikan server lain pada port tersebut atau gunakan port lain yang sudah diizinkan. Jika CORS ditolak atau WSS tidak tersambung, periksa origin halaman, koneksi internet, dan konfigurasi Nginx. Skor model belum dikalibrasi; keberhasilan koneksi tidak menjamin setiap pose diklasifikasikan benar. J/Z SIBI masih statis dan D/F/P BISINDO dapat tertukar.

@@ -81,7 +81,10 @@ function sendFrame(token) {
   if (!video.videoWidth) { schedule(token, 100); return; }
   canvas.width = Math.min(640, video.videoWidth); canvas.height = Math.round(video.videoHeight * canvas.width / video.videoWidth);
   capturedAt = performance.now();
-  canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height); // Send original pixels; mirror preview only.
+  const context = canvas.getContext('2d');
+  context.filter = $('low-light').checked ? 'brightness(1.25) contrast(1.10)' : 'none';
+  context.drawImage(video, 0, 0, canvas.width, canvas.height); // Keep inference unmirrored; filter the pixels sent to the API.
+  context.filter = 'none';
   pending = true;
   canvas.toBlob(blob => {
     if (token !== session || !active) return;
