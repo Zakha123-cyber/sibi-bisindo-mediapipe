@@ -16,14 +16,14 @@
       <span id="connection" class="badge" role="status">API belum diperiksa</span>
     </header>
     <section class="controls card" aria-label="Pengaturan kamera">
-      <label>Bahasa<select id="language"><option value="sibi">SIBI</option><option value="bisindo">BISINDO</option></select></label>
+      <label>Bahasa<select id="language"><option value="sibi">SIBI</option><option value="bisindo">BISINDO</option><option value="auto">Otomatis (jumlah tangan)</option></select></label>
       <label class="api-field">Alamat API<input id="api" type="url" value="https://ai.signtech.tech" spellcheck="false" readonly></label>
       <button id="check-api" class="button secondary" type="button">Cek API</button>
       <div class="camera-buttons"><button id="start" class="button primary" type="button">Mulai kamera</button><button id="stop" class="button secondary" type="button" disabled>Berhenti</button></div>
     </section>
     <section id="production-report-panel" class="production-panel card" aria-label="Uji integrasi produksi">
       <h2>Periksa koneksi sebelum menyalakan kamera</h2>
-      <p>Uji ini mengirim gambar putih sintetis ke HTTP dan WebSocket SIBI/BISINDO. Kamera belum dibuka.</p>
+      <p>Uji ini mengirim gambar putih sintetis ke HTTP dan WebSocket SIBI, BISINDO, serta mode otomatis. Kamera belum dibuka.</p>
       <button id="production-check" class="button secondary" type="button">Uji koneksi lengkap</button>
       <p id="production-result" role="status">Belum diuji. Klik tombol di atas untuk memeriksa kedua model.</p>
       <ol id="production-report"></ol>

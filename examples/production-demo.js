@@ -35,7 +35,9 @@
     });
   }
   function assertBlank(value, language) {
-    if (value.language !== language || value.detection_status !== 'no_hand' || value.label !== null || value.hand_count !== 0) {
+    const selectedLanguage = language === 'auto' ? null : language;
+    if (value.language !== selectedLanguage || value.detection_status !== 'no_hand' || value.label !== null || value.hand_count !== 0
+        || (language === 'auto' && (value.requested_language !== 'auto' || value.routing_hand_count !== 0 || value.model_id !== null))) {
       throw new Error('Respons gambar kosong tidak sesuai kontrak: ' + JSON.stringify(value));
     }
   }
@@ -50,7 +52,7 @@
       if (ready.status !== 'ready') throw new Error('Model belum siap.');
       add('HTTPS + CORS: API ready', 'passed');
       const models = await request('/v1/models');
-      for (const language of ['sibi', 'bisindo']) {
+      for (const language of ['sibi', 'bisindo', 'auto']) {
         if (!models.models?.[language]) throw new Error('Metadata model tidak lengkap.');
         add(`${language.toUpperCase()}: ${models.models[language].model_id}`, 'passed');
       }
@@ -66,7 +68,7 @@
         const ws = await checkSocket(language, blank);
         assertBlank(ws, language); add(`WSS ${language.toUpperCase()}: no_hand (sesuai gambar kosong)`, 'passed');
       }
-      element('production-result').textContent = 'Lulus: HTTPS, CORS, HTTP, dan WSS kedua model. Klik Mulai kamera untuk menguji pose.';
+      element('production-result').textContent = 'Lulus: HTTPS, CORS, HTTP, dan WSS kedua model serta mode otomatis. Klik Mulai kamera untuk menguji pose.';
       element('production-report-panel').dataset.result = 'passed';
     } catch (error) {
       add(error.message || String(error), 'error');

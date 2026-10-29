@@ -62,6 +62,7 @@ class ApiTests(unittest.TestCase):
         page=self.client.get('/production.html')
         self.assertEqual(page.status_code,200)
         self.assertIn('text/html',page.headers['content-type'])
+        self.assertIn('<option value="auto">',page.text)
         for filename in ('webcam.css','webcam.js','production-demo.css','production-demo.js'):
             self.assertIn(filename,page.text)
             self.assertEqual(self.client.get('/'+filename).status_code,200)

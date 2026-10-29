@@ -8,12 +8,14 @@ Buka **https://ai.signtech.tech/production.html** di Chrome atau Edge. Halaman d
 
 Buka **http://localhost:5173/production.html** untuk versi lokal. Launcher hanya memakai pustaka standar Python untuk menyajikan HTML/CSS/JavaScript. Pada kedua alamat, semua prediksi dikirim langsung oleh browser ke `https://ai.signtech.tech` dan `wss://ai.signtech.tech`; launcher lokal tidak menjalankan model atau API lokal.
 
-1. Klik **Uji koneksi lengkap**. Browser memeriksa health, metadata model, HTTP, serta WSS kedua bahasa menggunakan JPEG putih sintetis. Hasil yang diharapkan adalah `no_hand`, karena gambar memang tidak berisi tangan. Uji ini memeriksa integrasi, bukan akurasi alfabet.
-2. Pilih SIBI atau BISINDO, klik **Mulai kamera**, lalu berikan izin kamera pada browser.
+1. Klik **Uji koneksi lengkap**. Browser memeriksa health, metadata model, HTTP, serta WSS untuk SIBI, BISINDO, dan mode otomatis menggunakan JPEG putih sintetis. Hasil yang diharapkan adalah `no_hand`, karena gambar memang tidak berisi tangan. Uji ini memeriksa integrasi, bukan akurasi alfabet.
+2. Pilih SIBI, BISINDO, atau **Otomatis (jumlah tangan)**, klik **Mulai kamera**, lalu berikan izin kamera pada browser.
 3. Bentuk pose dan amati huruf, skor, jumlah tangan, waktu server, jeda pengiriman frame, serta FPS respons.
 4. Klik **Berhenti** sebelum mengganti bahasa. Hanya satu frame menunggu respons, sehingga gambar tidak menumpuk dalam antrean.
 
 Preview sinkron memasangkan landmark dengan frame yang dikirim. Jika dimatikan, video live terus bergerak dan landmark dapat tertinggal akibat inferensi/jaringan. Preview cermin tidak membalik piksel input API. Halaman tidak merekam atau menyimpan gambar. Frame kamera dikirim ke VM untuk diproses.
+
+Mode otomatis menampilkan checkpoint yang dipilih di bawah huruf. Satu tangan diarahkan ke SIBI, dua tangan ke BISINDO; ini heuristik jumlah tangan per frame dan dapat salah arah bila satu tangan luput dideteksi. Jika dua detektor berbeda menghitung tangan, halaman menampilkan pesan tanpa huruf. Endpoint manual tetap tersedia bagi aplikasi yang sudah mengetahui bahasanya.
 
 Untuk mencoba kondisi gelap, nyalakan **Bantu cahaya redup** di bawah preview. Browser menaikkan kecerahan 1,25× dan kontras 1,10× pada frame yang dikirim ke API; preview sinkron menampilkan frame yang sama. Opsi ini mati secara default agar input sesuai alur asli. Bandingkan pose yang sama dengan opsi mati/nyala, amati apakah landmark dan huruf membaik, serta matikan jika detail jari menjadi memutih atau noise makin kuat. Opsi ini masih eksperimen; peningkatan akurasi belum terukur. Pencahayaan fisik yang lebih baik atau pengaturan eksposur kamera tetap lebih baik jika tersedia.
 
