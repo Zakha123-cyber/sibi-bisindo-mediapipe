@@ -31,3 +31,10 @@ class Prediction(BaseModel):
     preprocessing: Preprocessing
     timings_ms: Timings
     landmarks: list[list[list[float]]] | None
+
+
+class AutoPrediction(Prediction):
+    requested_language: Literal['auto']
+    routing_hand_count: int = Field(ge=0,le=2)
+    language: Literal['sibi','bisindo'] | None
+    model_id: str | None

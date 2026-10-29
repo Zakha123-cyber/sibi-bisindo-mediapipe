@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "SIBI / BISINDO Alphabet API",
-    "description": "Service pengenalan pose alfabet statis SIBI/BISINDO. Pilih bahasa secara eksplisit. Kirim byte JPEG/PNG, bukan JSON, base64, atau multipart. Kontrak HTTP menggunakan OpenAPI; detail webcam WebSocket tersedia pada extension x-websocket-contract di dokumen ini. Extension tersebut dibaca manual dan tidak otomatis menjadi request WebSocket pada importer OpenAPI. Tidak memerlukan API key/JWT saat ini. CORS bukan autentikasi.",
+    "description": "Service pengenalan pose alfabet statis SIBI/BISINDO. Pilih bahasa eksplisit atau routing auto berdasarkan jumlah tangan. Kirim byte JPEG/PNG, bukan JSON, base64, atau multipart. Kontrak HTTP menggunakan OpenAPI; detail webcam WebSocket tersedia pada extension x-websocket-contract di dokumen ini. Extension tersebut dibaca manual dan tidak otomatis menjadi request WebSocket pada importer OpenAPI. Tidak memerlukan API key/JWT saat ini. CORS bukan autentikasi.",
     "version": "1.0.0"
   },
   "paths": {
@@ -242,6 +242,256 @@
             }
           }
         }
+      }
+    },
+    "/v1/predict/auto": {
+      "post": {
+        "tags": [
+          "prediction"
+        ],
+        "summary": "Pilih SIBI/BISINDO dari jumlah tangan per frame",
+        "operationId": "predict_auto_v1_predict_auto_post",
+        "parameters": [
+          {
+            "name": "include_landmarks",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Include Landmarks"
+            },
+            "description": "Sertakan titik landmark untuk overlay; default false."
+          },
+          {
+            "name": "mirrored",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Mirrored"
+            },
+            "description": "true hanya jika piksel input sudah dimirror; default false. CSS mirror preview tidak memerlukan true."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AutoPrediction"
+                },
+                "examples": {
+                  "one_hand": {
+                    "summary": "Satu tangan: checkpoint SIBI",
+                    "value": {
+                      "language": "sibi",
+                      "model_id": "sibi_20261020_130607_889055",
+                      "status": "predicted",
+                      "detection_status": "ok",
+                      "label": "A",
+                      "score": 0.94,
+                      "score_type": "softmax_uncalibrated",
+                      "hand_count": 1,
+                      "width": 640,
+                      "height": 480,
+                      "preprocessing": {
+                        "method": "baseline",
+                        "attempts": 0,
+                        "recovered": false,
+                        "input_was_mirrored": false,
+                        "coordinates": "unmirrored_normalized_xyz"
+                      },
+                      "timings_ms": {
+                        "detector": 30.0,
+                        "classifier": 1.0,
+                        "total": 32.0
+                      },
+                      "landmarks": null,
+                      "requested_language": "auto",
+                      "routing_hand_count": 1
+                    }
+                  },
+                  "two_hands": {
+                    "summary": "Dua tangan: checkpoint BISINDO",
+                    "value": {
+                      "language": "bisindo",
+                      "model_id": "bisindo_20261021_133454_756637",
+                      "status": "predicted",
+                      "detection_status": "two_hands_actor_unverified",
+                      "label": "A",
+                      "score": 0.94,
+                      "score_type": "softmax_uncalibrated",
+                      "hand_count": 2,
+                      "width": 640,
+                      "height": 480,
+                      "preprocessing": {
+                        "method": "baseline",
+                        "attempts": 0,
+                        "recovered": false,
+                        "input_was_mirrored": false,
+                        "coordinates": "unmirrored_normalized_xyz"
+                      },
+                      "timings_ms": {
+                        "detector": 30.0,
+                        "classifier": 1.0,
+                        "total": 32.0
+                      },
+                      "landmarks": null,
+                      "requested_language": "auto",
+                      "routing_hand_count": 2
+                    }
+                  },
+                  "no_hand": {
+                    "summary": "Nol tangan: belum memilih model",
+                    "value": {
+                      "language": null,
+                      "model_id": null,
+                      "status": "no_hand",
+                      "detection_status": "no_hand",
+                      "label": null,
+                      "score": null,
+                      "score_type": null,
+                      "hand_count": 0,
+                      "width": 640,
+                      "height": 480,
+                      "preprocessing": {
+                        "method": "baseline",
+                        "attempts": 0,
+                        "recovered": false,
+                        "input_was_mirrored": false,
+                        "coordinates": "unmirrored_normalized_xyz"
+                      },
+                      "timings_ms": {
+                        "detector": 30.0,
+                        "classifier": 0.0,
+                        "total": 31.0
+                      },
+                      "landmarks": [],
+                      "requested_language": "auto",
+                      "routing_hand_count": 0
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "description": "ID request untuk pelacakan galat HTTP.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validasi parameter gagal atau gambar kosong/rusak/dimensinya terlalu besar.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Origin tidak diizinkan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Galat internal; simpan error_id bila tersedia.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Frame melampaui 2.000.000 byte.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Content-Type harus image/jpeg atau image/png.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Jalur inferensi sibuk atau service belum siap. Tunggu lalu kirim frame terbaru.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "1"
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "image/jpeg": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            },
+            "image/png": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "description": "Heuristik: 1 tangan → SIBI; 2 tangan → BISINDO setelah konfirmasi detektor BISINDO. Null label/language adalah hasil sah.",
+        "x-codeSamples": [
+          {
+            "lang": "Shell",
+            "source": "curl -X POST \"https://ai.signtech.tech/v1/predict/auto?include_landmarks=true\" -H \"Content-Type: image/jpeg\" --data-binary @frame.jpg"
+          }
+        ]
       }
     },
     "/v1/predict/{language}": {
@@ -505,6 +755,155 @@
   },
   "components": {
     "schemas": {
+      "AutoPrediction": {
+        "properties": {
+          "language": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "sibi",
+                  "bisindo"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Language",
+            "description": "Checkpoint terpilih, atau null bila tidak ada tangan atau kedua detektor berbeda hasil."
+          },
+          "model_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Id",
+            "description": "ID checkpoint terpilih, atau null bila belum ada pilihan."
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "detection_status": {
+            "type": "string",
+            "title": "Detection Status"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "score_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score Type"
+          },
+          "hand_count": {
+            "type": "integer",
+            "maximum": 2.0,
+            "minimum": 0.0,
+            "title": "Hand Count"
+          },
+          "width": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Width"
+          },
+          "height": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Height"
+          },
+          "preprocessing": {
+            "$ref": "#/components/schemas/Preprocessing"
+          },
+          "timings_ms": {
+            "$ref": "#/components/schemas/Timings"
+          },
+          "landmarks": {
+            "anyOf": [
+              {
+                "items": {
+                  "items": {
+                    "items": {
+                      "type": "number"
+                    },
+                    "type": "array"
+                  },
+                  "type": "array"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Landmarks"
+          },
+          "requested_language": {
+            "type": "string",
+            "const": "auto",
+            "title": "Requested Language",
+            "description": "Mode yang diminta; selalu auto."
+          },
+          "routing_hand_count": {
+            "type": "integer",
+            "maximum": 2.0,
+            "minimum": 0.0,
+            "title": "Routing Hand Count",
+            "description": "Jumlah tangan pada detektor awal SIBI yang menentukan rute."
+          }
+        },
+        "type": "object",
+        "required": [
+          "language",
+          "model_id",
+          "status",
+          "detection_status",
+          "label",
+          "score",
+          "score_type",
+          "hand_count",
+          "width",
+          "height",
+          "preprocessing",
+          "timings_ms",
+          "landmarks",
+          "requested_language",
+          "routing_hand_count"
+        ],
+        "title": "AutoPrediction"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -527,7 +926,7 @@
               "bisindo"
             ],
             "title": "Language",
-            "description": "Model yang dipilih pemanggil; tidak ada pemilihan bahasa otomatis."
+            "description": "Pada endpoint manual: model yang dipilih pemanggil. Pada auto: checkpoint terpilih atau null."
           },
           "model_id": {
             "type": "string",
@@ -536,7 +935,7 @@
           "status": {
             "type": "string",
             "title": "Status",
-            "description": "predicted bila ekstraksi valid; selain itu no_hand, unexpected_extra_hand, atau invalid_geometry."
+            "description": "predicted bila ekstraksi valid; selain itu no_hand, unexpected_extra_hand, invalid_geometry, atau route_disagreement pada auto."
           },
           "detection_status": {
             "type": "string",
@@ -828,6 +1227,25 @@
             "type": "string"
           }
         }
+      },
+      "WebSocketAutoPrediction": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AutoPrediction"
+          },
+          {
+            "type": "object",
+            "required": [
+              "type"
+            ],
+            "properties": {
+              "type": {
+                "const": "prediction",
+                "type": "string"
+              }
+            }
+          }
+        ]
       }
     }
   },
@@ -846,7 +1264,8 @@
     "description": "Kontrak tambahan untuk dibaca manual; bukan operasi HTTP OpenAPI.",
     "urls": {
       "sibi": "wss://ai.signtech.tech/v1/ws/sibi",
-      "bisindo": "wss://ai.signtech.tech/v1/ws/bisindo"
+      "bisindo": "wss://ai.signtech.tech/v1/ws/bisindo",
+      "auto": "wss://ai.signtech.tech/v1/ws/auto"
     },
     "query_parameters": [
       {
@@ -881,9 +1300,12 @@
       "frame_type": "text",
       "payload": "JSON",
       "schema": {
-        "oneOf": [
+        "anyOf": [
           {
             "$ref": "#/components/schemas/WebSocketPrediction"
+          },
+          {
+            "$ref": "#/components/schemas/WebSocketAutoPrediction"
           },
           {
             "$ref": "#/components/schemas/WebSocketError"
@@ -937,6 +1359,34 @@
           "total": 32.0
         },
         "landmarks": null
+      },
+      "auto_prediction": {
+        "type": "prediction",
+        "language": "bisindo",
+        "model_id": "bisindo_20261021_133454_756637",
+        "status": "predicted",
+        "detection_status": "two_hands_actor_unverified",
+        "label": "A",
+        "score": 0.94,
+        "score_type": "softmax_uncalibrated",
+        "hand_count": 2,
+        "width": 640,
+        "height": 480,
+        "preprocessing": {
+          "method": "baseline",
+          "attempts": 0,
+          "recovered": false,
+          "input_was_mirrored": false,
+          "coordinates": "unmirrored_normalized_xyz"
+        },
+        "timings_ms": {
+          "detector": 30.0,
+          "classifier": 1.0,
+          "total": 32.0
+        },
+        "landmarks": null,
+        "requested_language": "auto",
+        "routing_hand_count": 2
       },
       "no_hand": {
         "type": "prediction",
@@ -1002,9 +1452,15 @@
     "limitations": [
       "J/Z SIBI merupakan pose statis, belum pengenalan gerakan.",
       "D/F/P BISINDO dapat tertukar pada webcam.",
-      "Jumlah tangan tidak menentukan bahasa; pilih mode secara eksplisit.",
+      "Auto memakai heuristik jumlah tangan terdeteksi per frame; bukan pengenalan bahasa yang tervalidasi.",
       "Skor tidak terkalibrasi dan tidak ada kelas unknown/background."
     ],
+    "auto_routing": {
+      "one_hand": "sibi",
+      "two_hands": "bisindo",
+      "zero_hands": "language=null, label=null",
+      "detector_disagreement": "route_disagreement; language=null, label=null"
+    },
     "privacy": "Service tidak menyimpan frame atau riwayat prediksi pengguna.",
     "authentication": "Belum ada API key/JWT. Allowlist Origin bukan autentikasi.",
     "proxy_errors": "Nginx dapat mengembalikan galat non-JSON, misalnya 502/504; periksa HTTP status sebelum parsing JSON.",

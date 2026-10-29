@@ -95,15 +95,18 @@ function sendFrame(token) {
 }
 function showResult(result, frameAge) {
   $('letter').textContent = result.label || '—';
-  $('prediction-state').textContent = result.label ? `Pose huruf ${result.label}` : 'Belum ada huruf';
+  const chosen = $('language').value === 'auto' ? `Mode ${result.language?.toUpperCase() || 'belum dipilih'} · ` : '';
+  $('prediction-state').textContent = chosen + (result.label ? `Pose huruf ${result.label}` : 'Belum ada huruf');
   $('score').textContent = result.score == null ? '—' : result.score.toFixed(3);
   const score = Math.max(0, Math.min(1, result.score || 0));
   $('score-fill').style.width = `${score * 100}%`; $('score-meter').setAttribute('aria-valuenow', String(score));
-  $('hands').textContent = String(result.hand_count); $('latency').textContent = `${Math.round(result.timings_ms.total)} ms`;
+  $('hands').textContent = result.routing_hand_count != null && result.routing_hand_count !== result.hand_count
+    ? `${result.hand_count} (awal ${result.routing_hand_count})` : String(result.hand_count);
+  $('latency').textContent = `${Math.round(result.timings_ms.total)} ms`;
   $('frame-age').textContent = `${Math.round(frameAge)} ms`;
   responses.push(performance.now()); responses = responses.slice(-12);
   $('fps').textContent = responses.length < 2 ? '—' : ((responses.length - 1) * 1000 / (responses.at(-1) - responses[0])).toFixed(1);
-  const messages = { no_hand: 'Belum ada tangan terlihat. Arahkan tangan ke kamera.', unexpected_extra_hand: 'SIBI memakai satu tangan. Jauhkan tangan kedua.', invalid_geometry: 'Landmark belum valid. Perjelas posisi tangan.' };
+  const messages = { no_hand: 'Belum ada tangan terlihat. Arahkan tangan ke kamera.', unexpected_extra_hand: 'SIBI memakai satu tangan. Jauhkan tangan kedua.', invalid_geometry: 'Landmark belum valid. Perjelas posisi tangan.', route_disagreement: 'Jumlah tangan berbeda antar detektor. Tahan pose dan pastikan kedua tangan terlihat jelas.' };
   status(result.label ? 'Tahan pose sebentar dan amati hasil hurufnya.' : (messages[result.detection_status] || 'Pose belum dapat diprediksi.'));
   lastLandmarks = result.landmarks || []; drawLandmarks();
 }
@@ -149,9 +152,13 @@ async function start() {
   } catch (error) { if (token === session) fail(friendlyError(error)); }
 }
 function languageHelp() {
-  const sibi = $('language').value === 'sibi';
-  $('pose-help').textContent = sibi ? 'Gunakan satu tangan dan pastikan semua jari terlihat.' : 'Bentuk pose BISINDO; kedua tangan masuk kamera bila pose membutuhkannya.';
-  $('limitations').textContent = sibi ? 'J dan Z SIBI dikenali sebagai pose statis, belum sebagai gerakan.' : 'Huruf D, F, dan P BISINDO masih dapat tertukar pada webcam.';
+  const language = $('language').value;
+  $('pose-help').textContent = language === 'sibi' ? 'Gunakan satu tangan dan pastikan semua jari terlihat.'
+    : language === 'bisindo' ? 'Bentuk pose BISINDO; kedua tangan masuk kamera bila pose membutuhkannya.'
+    : 'Otomatis: satu tangan diarahkan ke SIBI, dua tangan ke BISINDO. Tahan pose agar kedua tangan terlihat.';
+  $('limitations').textContent = language === 'sibi' ? 'J dan Z SIBI dikenali sebagai pose statis, belum sebagai gerakan.'
+    : language === 'bisindo' ? 'Huruf D, F, dan P BISINDO masih dapat tertukar pada webcam.'
+    : 'Mode otomatis mengikuti jumlah tangan yang terdeteksi per frame; jumlah tangan belum membuktikan bahasanya.';
   clearPrediction('Menunggu kamera');
 }
 $('start').onclick = start; $('stop').onclick = () => stop();

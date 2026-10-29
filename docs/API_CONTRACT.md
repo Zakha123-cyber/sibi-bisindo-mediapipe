@@ -2,7 +2,7 @@
 
 Base URL produksi: `https://ai.signtech.tech`. Berkas yang dapat dikirim ke developer: [OpenAPI JSON lengkap](api/openapi.json). Dokumen JSON tersebut mencakup HTTP dan extension `x-websocket-contract` untuk dibaca manual; importer OpenAPI dapat mengabaikan extension WebSocket. Swagger live: https://ai.signtech.tech/docs. Ekspor ulang dengan `& '.\.venv-service\Scripts\python.exe' scripts/export_api_docs.py` setelah kontrak service berubah.
 
-Service mengenali satu pose alfabet statis per frame. Pilih bahasa secara eksplisit: `sibi` atau `bisindo`. Tidak merangkai kata/kalimat. J/Z SIBI masih memakai pose statis; D/F/P BISINDO memiliki keterbatasan pada webcam.
+Service mengenali satu pose alfabet statis per frame. Backend web dapat memilih `sibi` atau `bisindo` secara eksplisit, atau memakai routing heuristik `auto`. Tidak merangkai kata/kalimat. J/Z SIBI masih memakai pose statis; D/F/P BISINDO memiliki keterbatasan pada webcam.
 
 ## Endpoint
 
@@ -13,9 +13,41 @@ Service mengenali satu pose alfabet statis per frame. Pilih bahasa secara ekspli
 | `GET /v1/models` | ID model, label, dan batasan |
 | `POST /v1/predict/{language}` | Satu frame JPEG/PNG menjadi prediksi |
 | `WS /v1/ws/{language}` | Frame webcam biner, satu respons JSON per frame |
+| `POST /v1/predict/auto` | Pilih checkpoint dari jumlah tangan terdeteksi per frame |
+| `WS /v1/ws/auto` | Routing otomatis yang sama untuk frame webcam biner |
 | `GET /docs` | Swagger/OpenAPI interaktif |
 
 API memakai dua checkpoint terpilih: SIBI `sibi_20261020_130607_889055` dan BISINDO `bisindo_20261021_133454_756637`. Classifier dan praproses sesuai demo webcam. Tidak ada threshold atau voting lintas frame tambahan di server.
+
+## Routing otomatis (opsional)
+
+`auto` bukan model pengenal bahasa baru. Pada setiap frame, detektor SIBI terlebih dahulu menghitung tangan. **Satu tangan → model SIBI; dua tangan → detektor/pemulihan BISINDO lalu model BISINDO.** Nol tangan menghasilkan respons tanpa huruf. Jika detektor awal menemukan dua tangan tetapi detektor BISINDO tidak mengonfirmasi dua tangan, respons `status=route_disagreement`, `language=null`, dan `label=null`; backend sebaiknya menampilkan “pose belum jelas” atau menunggu frame berikutnya.
+
+Input, batas ukuran, query `include_landmarks`/`mirrored`, header Origin, serta error HTTP/WS sama dengan endpoint manual. Contoh respons dua tangan:
+
+```json
+{
+  "requested_language": "auto",
+  "routing_hand_count": 2,
+  "language": "bisindo",
+  "model_id": "bisindo_20261021_133454_756637",
+  "status": "predicted",
+  "detection_status": "two_hands_actor_unverified",
+  "label": "A",
+  "score": 0.94,
+  "score_type": "softmax_uncalibrated",
+  "hand_count": 2,
+  "width": 640,
+  "height": 480,
+  "preprocessing": {"method": "baseline", "attempts": 0, "recovered": false, "input_was_mirrored": false, "coordinates": "unmirrored_normalized_xyz"},
+  "timings_ms": {"detector": 45.0, "classifier": 1.0, "total": 48.0},
+  "landmarks": null
+}
+```
+
+`requested_language` selalu `auto`; `language` dan `model_id` adalah checkpoint yang benar-benar dipakai, atau `null` bila belum ada pilihan. `routing_hand_count` berasal dari detektor pertama; `hand_count` adalah jumlah pada hasil detektor yang dikembalikan. Keduanya dapat berbeda pada `route_disagreement`. Angka waktu contoh hanya ilustrasi.
+
+**Batas penting:** satu tangan yang terlihat belum membuktikan pose itu SIBI; tangan kedua BISINDO bisa luput dari deteksi sehingga terarah ke SIBI. Dua tangan bisa berasal dari orang lain atau pose SIBI dengan tangan tambahan. Pemilihan dilakukan per frame tanpa stabilisasi temporal, dan jalur dua tangan memproses detektor dua kali sehingga dapat lebih lambat. Bila konteks bahasa sudah diketahui, endpoint manual lebih pasti untuk pemilihan checkpoint.
 
 ## Format input
 
@@ -71,7 +103,7 @@ Pertahankan rasio aspek kamera pada aplikasi sebenarnya; contoh 640x480 mengasum
 }
 ```
 
-`label` dan `score` bernilai null saat ekstraksi tidak valid. `status` dapat berupa `no_hand`, `unexpected_extra_hand` (SIBI membutuhkan satu tangan), atau `invalid_geometry`. Jika valid, `status=predicted`; `detection_status` tetap menerangkan keluaran detektor. Satu tangan valid pada BISINDO belum membuktikan pose dua tangan lengkap.
+`label` dan `score` bernilai null saat ekstraksi tidak valid. `status` dapat berupa `no_hand`, `unexpected_extra_hand` (SIBI membutuhkan satu tangan), atau `invalid_geometry`; mode auto juga dapat mengembalikan `route_disagreement`. Jika valid, `status=predicted`; `detection_status` tetap menerangkan keluaran detektor. Satu tangan valid pada BISINDO belum membuktikan pose dua tangan lengkap.
 
 `score` adalah softmax yang belum dikalibrasi, bukan probabilitas kebenaran yang terjamin. Belum ada kelas unknown/background. Huruf yang terbaca konsisten belum tentu pose benar.
 
@@ -79,7 +111,7 @@ Jika diminta, `landmarks` berbentuk `[jumlah_tangan][21][3]`; slot diurutkan men
 
 ## WebSocket
 
-URL: `wss://ai.signtech.tech/v1/ws/bisindo`. Kirim Blob/ArrayBuffer JPEG/PNG; tunggu event `message`, lalu kirim frame selanjutnya. Browser mengirim header Origin otomatis dan origin tersebut harus ada pada konfigurasi server. WebSocket tidak dilindungi middleware CORS HTTP, sehingga handshake diperiksa tersendiri. Origin/bahasa yang ditolak sebelum koneksi diterima dapat tampak sebagai HTTP 403 saat handshake, bukan close frame 1008.
+URL manual: `wss://ai.signtech.tech/v1/ws/sibi` atau `/v1/ws/bisindo`; URL otomatis: `wss://ai.signtech.tech/v1/ws/auto`. Kirim Blob/ArrayBuffer JPEG/PNG; tunggu event `message`, lalu kirim frame selanjutnya. Browser mengirim header Origin otomatis dan origin tersebut harus ada pada konfigurasi server. WebSocket tidak dilindungi middleware CORS HTTP, sehingga handshake diperiksa tersendiri. Origin/bahasa yang ditolak sebelum koneksi diterima dapat tampak sebagai HTTP 403 saat handshake, bukan close frame 1008.
 
 Respons sukses sama dengan respons HTTP dengan tambahan `"type":"prediction"`. Error berupa `{"type":"error","code":"503","detail":"..."}` atau `binary_frame_required`/`empty_frame`. Frame terlalu besar menutup koneksi dengan kode 1009; origin atau bahasa tidak sah ditolak dengan kode 1008. Koneksi tanpa frame selama 60 detik ditutup.
 

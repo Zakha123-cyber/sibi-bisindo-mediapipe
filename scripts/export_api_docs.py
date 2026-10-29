@@ -18,7 +18,7 @@ def build_document():
     document['servers'] = [{'url': 'https://ai.signtech.tech', 'description': 'Production'}]
     document['security'] = []
     document['info']['description'] = (
-        'Service pengenalan pose alfabet statis SIBI/BISINDO. Pilih bahasa secara eksplisit. '
+        'Service pengenalan pose alfabet statis SIBI/BISINDO. Pilih bahasa eksplisit atau routing auto berdasarkan jumlah tangan. '
         'Kirim byte JPEG/PNG, bukan JSON, base64, atau multipart. '
         'Kontrak HTTP menggunakan OpenAPI; detail webcam WebSocket tersedia pada '
         'extension x-websocket-contract di dokumen ini. Extension tersebut dibaca manual '
@@ -60,11 +60,19 @@ def build_document():
                    score_type=None, hand_count=0, landmarks=[])
     no_hand['timings_ms'] = dict(detector=30.0, classifier=0.0, total=31.0)
     examples['no_hand'] = {'summary': 'Frame valid, tidak ada tangan; include_landmarks=true', 'value': no_hand}
+    auto_one = dict(examples['sibi']['value'],requested_language='auto',routing_hand_count=1)
+    auto_two = dict(examples['bisindo']['value'],requested_language='auto',routing_hand_count=2)
+    auto_empty = dict(no_hand,requested_language='auto',routing_hand_count=0,language=None,model_id=None)
+    auto_examples = {
+        'one_hand': {'summary': 'Satu tangan: checkpoint SIBI', 'value': auto_one},
+        'two_hands': {'summary': 'Dua tangan: checkpoint BISINDO', 'value': auto_two},
+        'no_hand': {'summary': 'Nol tangan: belum memilih model', 'value': auto_empty},
+    }
 
     prediction_properties = schemas['Prediction']['properties']
     descriptions = {
-        'language': 'Model yang dipilih pemanggil; tidak ada pemilihan bahasa otomatis.',
-        'status': 'predicted bila ekstraksi valid; selain itu no_hand, unexpected_extra_hand, atau invalid_geometry.',
+        'language': 'Pada endpoint manual: model yang dipilih pemanggil. Pada auto: checkpoint terpilih atau null.',
+        'status': 'predicted bila ekstraksi valid; selain itu no_hand, unexpected_extra_hand, invalid_geometry, atau route_disagreement pada auto.',
         'detection_status': 'ok (SIBI satu tangan), one_hand_completeness_unverified, '
                             'two_hands_actor_unverified, no_hand, unexpected_extra_hand, atau invalid_geometry.',
         'label': 'Huruf hasil model. Null bila ekstraksi tidak valid. Tidak ada kelas unknown/background.',
@@ -77,6 +85,11 @@ def build_document():
     }
     for name, description in descriptions.items():
         prediction_properties[name]['description'] = description
+    auto_properties = schemas['AutoPrediction']['properties']
+    auto_properties['requested_language']['description'] = 'Mode yang diminta; selalu auto.'
+    auto_properties['routing_hand_count']['description'] = 'Jumlah tangan pada detektor awal SIBI yang menentukan rute.'
+    auto_properties['language']['description'] = 'Checkpoint terpilih, atau null bila tidak ada tangan atau kedua detektor berbeda hasil.'
+    auto_properties['model_id']['description'] = 'ID checkpoint terpilih, atau null bila belum ada pilihan.'
 
     for path, item in document['paths'].items():
         for method, operation in item.items():
@@ -117,33 +130,42 @@ def build_document():
         },
     }
     predict = paths['/v1/predict/{language}']['post']
+    auto_predict = paths['/v1/predict/auto']['post']
     predict['summary'] = 'Prediksi satu pose alfabet dari gambar'
     predict['description'] = 'Kirim isi berkas gambar secara langsung. Null label adalah hasil sah, bukan galat HTTP.'
     predict['responses']['200']['content']['application/json']['examples'] = examples
-    for parameter in predict['parameters']:
-        parameter['description'] = {
-            'language': 'Pilih sibi atau bisindo secara eksplisit.',
-            'include_landmarks': 'Sertakan titik landmark untuk overlay; default false.',
-            'mirrored': 'true hanya jika piksel input sudah dimirror; default false. CSS mirror preview tidak memerlukan true.',
-        }[parameter['name']]
-    for code, description in {
-        '413': 'Frame melampaui 2.000.000 byte.',
-        '415': 'Content-Type harus image/jpeg atau image/png.',
-        '503': 'Jalur inferensi sibuk atau service belum siap. Tunggu lalu kirim frame terbaru.',
-    }.items():
-        predict['responses'][code] = {
-            'description': description,
-            'content': {'application/json': {'schema': {'$ref': '#/components/schemas/ApiError'}}},
+    auto_predict['summary'] = 'Pilih SIBI/BISINDO dari jumlah tangan per frame'
+    auto_predict['description'] = 'Heuristik: 1 tangan → SIBI; 2 tangan → BISINDO setelah konfirmasi detektor BISINDO. Null label/language adalah hasil sah.'
+    auto_predict['responses']['200']['content']['application/json']['examples'] = auto_examples
+    for operation in (predict, auto_predict):
+        for parameter in operation['parameters']:
+            parameter['description'] = {
+                'language': 'Pilih sibi atau bisindo secara eksplisit.',
+                'include_landmarks': 'Sertakan titik landmark untuk overlay; default false.',
+                'mirrored': 'true hanya jika piksel input sudah dimirror; default false. CSS mirror preview tidak memerlukan true.',
+            }[parameter['name']]
+        for code, description in {
+            '413': 'Frame melampaui 2.000.000 byte.',
+            '415': 'Content-Type harus image/jpeg atau image/png.',
+            '503': 'Jalur inferensi sibuk atau service belum siap. Tunggu lalu kirim frame terbaru.',
+        }.items():
+            operation['responses'][code] = {
+                'description': description,
+                'content': {'application/json': {'schema': {'$ref': '#/components/schemas/ApiError'}}},
+            }
+        operation['responses']['503']['headers'] = {'Retry-After': {'schema': {'type': 'string'}, 'example': '1'}}
+        operation['responses']['422'] = {
+            'description': 'Validasi parameter gagal atau gambar kosong/rusak/dimensinya terlalu besar.',
+            'content': {'application/json': {'schema': {'anyOf': [
+                {'$ref': '#/components/schemas/ApiError'}, {'$ref': '#/components/schemas/HTTPValidationError'}
+            ]}}},
         }
-    predict['responses']['503']['headers'] = {'Retry-After': {'schema': {'type': 'string'}, 'example': '1'}}
-    predict['responses']['422'] = {
-        'description': 'Validasi parameter gagal atau gambar kosong/rusak/dimensinya terlalu besar.',
-        'content': {'application/json': {'schema': {'anyOf': [
-            {'$ref': '#/components/schemas/ApiError'}, {'$ref': '#/components/schemas/HTTPValidationError'}
-        ]}}},
-    }
     predict['x-codeSamples'] = [{
         'lang': 'Shell', 'source': 'curl -X POST "https://ai.signtech.tech/v1/predict/sibi?include_landmarks=true" '
+                                 '-H "Content-Type: image/jpeg" --data-binary @frame.jpg'
+    }]
+    auto_predict['x-codeSamples'] = [{
+        'lang': 'Shell', 'source': 'curl -X POST "https://ai.signtech.tech/v1/predict/auto?include_landmarks=true" '
                                  '-H "Content-Type: image/jpeg" --data-binary @frame.jpg'
     }]
     schemas['WebSocketPrediction'] = {
@@ -155,16 +177,21 @@ def build_document():
             'type': {'type': 'string', 'const': 'error'}, 'code': {'type': 'string'}, 'detail': {'type': 'string'},
         },
     }
+    schemas['WebSocketAutoPrediction'] = {
+        'allOf': [{'$ref': '#/components/schemas/AutoPrediction'},
+                  {'type': 'object', 'required': ['type'], 'properties': {'type': {'const': 'prediction', 'type': 'string'}}}],
+    }
     document['x-websocket-contract'] = {
         'description': 'Kontrak tambahan untuk dibaca manual; bukan operasi HTTP OpenAPI.',
-        'urls': {language: f'wss://ai.signtech.tech/v1/ws/{language}' for language in ('sibi', 'bisindo')},
+        'urls': {language: f'wss://ai.signtech.tech/v1/ws/{language}' for language in ('sibi', 'bisindo', 'auto')},
         'query_parameters': [p for p in predict['parameters'] if p['in'] == 'query'],
         'handshake': 'Origin wajib dan harus ada di allowlist server. Browser mengirim Origin otomatis; '
                      'klien non-browser perlu mengisinya. Bahasa/origin tidak sah ditolak sebelum accept, '
                      'sehingga klien dapat melihat HTTP 403 saat handshake, bukan close frame 1008.',
         'send': {'frame_type': 'binary', 'payload': 'Byte JPEG/PNG berupa Blob atau ArrayBuffer. Bukan JSON/base64/multipart.'},
-        'receive': {'frame_type': 'text', 'payload': 'JSON', 'schema': {'oneOf': [
-            {'$ref': '#/components/schemas/WebSocketPrediction'}, {'$ref': '#/components/schemas/WebSocketError'}
+        'receive': {'frame_type': 'text', 'payload': 'JSON', 'schema': {'anyOf': [
+            {'$ref': '#/components/schemas/WebSocketPrediction'},
+            {'$ref': '#/components/schemas/WebSocketAutoPrediction'}, {'$ref': '#/components/schemas/WebSocketError'}
         ]}},
         'flow': ['Buka koneksi dengan bahasa pilihan.', 'Ambil frame kamera dan encode JPEG/PNG.',
                  'Kirim satu frame biner lalu tunggu satu respons.',
@@ -179,6 +206,7 @@ def build_document():
                         '1009': 'Frame terlalu besar.'},
         'examples': {
             'prediction': {'type': 'prediction', **examples['sibi']['value']},
+            'auto_prediction': {'type': 'prediction', **auto_two},
             'no_hand': {'type': 'prediction', **no_hand},
             'error': {'type': 'error', 'code': '503', 'detail': 'Inference lane is busy; retry after the current frame'},
         },
@@ -200,8 +228,10 @@ def build_document():
                    'secure_context': 'Browser memerlukan HTTPS atau localhost untuk akses webcam.'},
         'limitations': ['J/Z SIBI merupakan pose statis, belum pengenalan gerakan.',
                         'D/F/P BISINDO dapat tertukar pada webcam.',
-                        'Jumlah tangan tidak menentukan bahasa; pilih mode secara eksplisit.',
+                        'Auto memakai heuristik jumlah tangan terdeteksi per frame; bukan pengenalan bahasa yang tervalidasi.',
                         'Skor tidak terkalibrasi dan tidak ada kelas unknown/background.'],
+        'auto_routing': {'one_hand': 'sibi', 'two_hands': 'bisindo', 'zero_hands': 'language=null, label=null',
+                         'detector_disagreement': 'route_disagreement; language=null, label=null'},
         'privacy': 'Service tidak menyimpan frame atau riwayat prediksi pengguna.',
         'authentication': 'Belum ada API key/JWT. Allowlist Origin bukan autentikasi.',
         'proxy_errors': 'Nginx dapat mengembalikan galat non-JSON, misalnya 502/504; periksa HTTP status sebelum parsing JSON.',

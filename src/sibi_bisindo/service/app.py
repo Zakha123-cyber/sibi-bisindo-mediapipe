@@ -12,10 +12,12 @@ from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 
 from .settings import Settings
 from .runtime import InferenceService, BadFrame, Busy
-from .schemas import Prediction
+from .schemas import AutoPrediction, Prediction
 
 log = logging.getLogger(__name__)
 Language = Literal['sibi','bisindo']
+IMAGE_REQUEST_BODY = {'requestBody':{'required':True,'content':{
+    kind:{'schema':{'type':'string','format':'binary'}} for kind in ('image/jpeg','image/png')}}}
 
 
 def create_app(settings=None, service_factory=InferenceService):
@@ -72,7 +74,8 @@ def create_app(settings=None, service_factory=InferenceService):
     async def run_prediction(service,language,payload,include_landmarks,mirrored):
         try:
             response=await service.predict(language,payload,include_landmarks,mirrored)
-            return Prediction.model_validate(response).model_dump()
+            schema = AutoPrediction if language == 'auto' else Prediction
+            return schema.model_validate(response).model_dump()
         except BadFrame as exc: raise HTTPException(422,str(exc)) from exc
         except Busy as exc: raise HTTPException(503,str(exc),headers={'Retry-After':'1'}) from exc
         except Exception as exc:
@@ -80,10 +83,7 @@ def create_app(settings=None, service_factory=InferenceService):
             log.exception('Inference failed, error_id=%s',error_id)
             raise HTTPException(500,f'Inference failed; error_id={error_id}') from exc
 
-    @app.post('/v1/predict/{language}',tags=['prediction'],response_model=Prediction,openapi_extra={
-        'requestBody':{'required':True,'content':{kind:{'schema':{'type':'string','format':'binary'}}
-                                                for kind in ('image/jpeg','image/png')}}})
-    async def predict(language: Language,request: Request,include_landmarks: bool=False,mirrored: bool=False):
+    async def read_frame(request: Request):
         if request.headers.get('content-type','').split(';')[0].strip().lower() not in {'image/jpeg','image/png'}:
             raise HTTPException(415,'Content-Type must be image/jpeg or image/png; send raw image bytes')
         payload=bytearray()
@@ -91,12 +91,21 @@ def create_app(settings=None, service_factory=InferenceService):
             if len(payload)+len(part)>settings.max_frame_bytes: raise HTTPException(413,'Frame exceeds MAX_FRAME_BYTES')
             payload.extend(part)
         if not payload: raise HTTPException(422,'Frame is empty')
-        return await run_prediction(request.app.state.service,language,bytes(payload),include_landmarks,mirrored)
+        return bytes(payload)
 
-    @app.websocket('/v1/ws/{language}')
-    async def webcam(socket: WebSocket,language: str,include_landmarks: bool=False,mirrored: bool=False):
+    @app.post('/v1/predict/auto',tags=['prediction'],response_model=AutoPrediction,openapi_extra=IMAGE_REQUEST_BODY)
+    async def predict_auto(request: Request,include_landmarks: bool=False,mirrored: bool=False):
+        payload = await read_frame(request)
+        return await run_prediction(request.app.state.service,'auto',payload,include_landmarks,mirrored)
+
+    @app.post('/v1/predict/{language}',tags=['prediction'],response_model=Prediction,openapi_extra=IMAGE_REQUEST_BODY)
+    async def predict(language: Language,request: Request,include_landmarks: bool=False,mirrored: bool=False):
+        payload = await read_frame(request)
+        return await run_prediction(request.app.state.service,language,payload,include_landmarks,mirrored)
+
+    async def websocket_frames(socket: WebSocket,language: str,include_landmarks: bool,mirrored: bool):
         # CORS middleware does not cover WebSocket handshakes.
-        if language not in ('sibi','bisindo') or socket.headers.get('origin') not in settings.allowed_origins:
+        if language not in ('sibi','bisindo','auto') or socket.headers.get('origin') not in settings.allowed_origins:
             await socket.close(code=1008)
             return
         await socket.accept()
@@ -121,5 +130,13 @@ def create_app(settings=None, service_factory=InferenceService):
                     await socket.send_json({'type':'error','code':str(exc.status_code),'detail':exc.detail})
         except WebSocketDisconnect:
             return
+
+    @app.websocket('/v1/ws/auto')
+    async def webcam_auto(socket: WebSocket,include_landmarks: bool=False,mirrored: bool=False):
+        await websocket_frames(socket,'auto',include_landmarks,mirrored)
+
+    @app.websocket('/v1/ws/{language}')
+    async def webcam(socket: WebSocket,language: str,include_landmarks: bool=False,mirrored: bool=False):
+        await websocket_frames(socket,language,include_landmarks,mirrored)
 
     return app
